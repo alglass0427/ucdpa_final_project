@@ -279,7 +279,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from .models import Portfolio, PortfolioAsset, Asset
-from django.db.models import Sum, Count, F, Q
+from django.db.models import Sum, Count, F, Q , Subquery, OuterRef
 
 @login_required
 def get_all_portfolios(request):
@@ -299,30 +299,32 @@ def get_all_portfolios(request):
         portfolio_details = portfolios.annotate(
             total_investments=Count('portfolio_assets'),
             max_trades=Sum('portfolio_assets__no_of_trades'),
-            sum_investments=Sum('portfolio_assets__holding_value'),
-            sum_cash=Sum('portfolio_assets__holding_value', filter=Q(portfolio_assets__asset__ticker='CASH'))
+            sum_investments=Sum('portfolio_assets__holding_value',filter=~Q(portfolio_assets__asset__ticker='CASH')),
+            sum_cash=Sum('portfolio_assets__holding_value', filter=Q(portfolio_assets__asset__ticker='CASH')),
+            total_value = (Sum('portfolio_assets__holding_value'))
         ).values(
             'id', 'portfolio_desc', 'total_investments', 'max_trades', 'sum_investments', 'sum_cash'
         )
+
+
+        # Subquery to calculate total holding value for each portfolio
+        portfolio_total_value = PortfolioAsset.objects.filter(
+            portfolio=OuterRef('portfolio_id')
+        ).values('portfolio').annotate(
+            total_value=Sum('holding_value')
+        ).values('total_value')
 
         all_details = PortfolioAsset.objects.filter(portfolio__in=portfolios).annotate(
             portfolio_reference =F('portfolio_id'),
             ticker=F('asset__ticker'),
             industry=F('asset__industry'),
             value=F('holding_value'),
-            trades=F('no_of_trades')
-        ).values(
-            'portfolio_id', 'ticker', 'industry', 'value', 'trades'
-        )
-        
-                # Aggregate data for the pie chart
-        industry_distribution = (
-            PortfolioAsset.objects.filter(portfolio__in=portfolios)
-            .values('asset__industry')
-            .annotate(total_value=Sum('holding_value'))
-            .order_by('-total_value')
-        )
+            trades=F('no_of_trades'),
+            weight=(F('holding_value') / Subquery(portfolio_total_value))*100
 
+        ).values(
+            'portfolio_id', 'ticker', 'industry', 'value', 'trades','weight'
+        )
 
         # Check if we have portfolios to return
         if portfolios.exists():
@@ -330,15 +332,21 @@ def get_all_portfolios(request):
             context = {
             'portfolios': portfolio_details,
             'all_details': all_details,
-            'industry_distribution': json.dumps(list(industry_distribution)), # Pass as a list for JSON serialization
+            # 'industry_distribution': json.dumps(list(industry_distribution)), # Pass as a list for JSON serialization
         }
             for detail in all_details:
                 print(detail)
 
-            return render(request, 'portfolios/portfolio_rows.html',context)
-            # return render(request, 'portfolios/portfolio_rows.html', {'portfolios': portfolio_details})
+            html_content = render(request, 'portfolios/portfolio_rows.html', context).content.decode('utf-8')            # return render(request, 'portfolios/portfolio_rows.html', {'portfolios': portfolio_details})
+            return JsonResponse({
+                'message': None,  # No message if there are portfolios
+                'html': html_content,
+                })
         else:
-            return JsonResponse({"error": "No portfolios found"}, status=404)
+            return JsonResponse({"error": "No portfolios found",
+                                 "message": "No Portfolios Found!", 
+                                 "category": "danger"
+                                 }, status=404)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
 

@@ -3,6 +3,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+// setTimeout(function() {
+//     let flashMessages = document.getElementsByClassName('alert');
+//     for (var i = 0; i < flashMessages.length; i++) {
+//         flashMessages[i].style.display = 'none';
+//     }
+// }, 3000); // 3000 milliseconds = 3 seconds
+
+
+
+
+
+// Function to remove all alert-* classes from an element
+// function removeAlertClasses(element) {
+//     // Loop through all classes of the element
+//     Array.from(element.classList).forEach((className) => {
+//         // Check if the class starts with "alert-"
+//         if (className.startsWith('alert-')) {
+//             element.classList.remove(className); // Remove the class
+//         }
+//     });
+// }
 // setTimeout(function() {
 //     let flashMessages = document.getElementsByClassName('flash-message');
 //     for (var i = 0; i < flashMessages.length; i++) {

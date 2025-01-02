@@ -49,7 +49,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-hover" id="portfolioContent-{{ portfolio.id }}">
+                                <table class="table table-bordered" id="portfolioContent-{{ portfolio.id }}">
                                     <thead class="table-success">
                                         <tr>
                                             <th>Ticker</th>
@@ -68,24 +68,24 @@
                                                     <td class="d-none d-sm-table-cell">{{ detail.industry }}</td>
                                                     <td>{{ detail.value|floatformat:4 }}</td>
                                                     <td>
-                                                        {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %}
-                                                            {% if total_value != 0 %}
-                                                                0%
-                                                            {% else %}
-                                                                N/A
-                                                            {% endif %}
-                                                        {% endwith %}
+                                                        <!-- {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %} -->
+                                                            <!-- {% if total_value != 0 %} -->
+                                                                {{ detail.weight|floatformat:4 }}%
+                                                            <!-- {% else %} -->
+                                                                <!-- N/A -->
+                                                            <!-- {% endif %} -->
+                                                        <!-- {% endwith %} -->
                                                     </td>
                                                 </tr>
                                             {% endif %}
                                         {% endfor %}
                                     </tbody>
                                     <tr>
-                                        {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %}
+                                        <!-- {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %} -->
                                         <td></td>
                                         <td class="d-none d-md-table-cell"></td>
                                         <td class="d-none d-sm-table-cell"></td>
-                                        <td>{{ total_value|floatformat:4 }}</td>
+                                        <td>{{ portfolio.total_value }}</td>
                                         <td>100%</td>
                                         {% endwith %}
                                     </tr>
@@ -94,15 +94,15 @@
                                         <td colspan="8">
                                             <div class="row">
                                                 <!-- First chart container -->
-                                                <div class="col-md-6 d-flex justify-content-center">
-                                                    <div class="chart-container" style="position: relative; height:40vh; width:80%; margin:auto">
+                                                <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
+                                                    <div class="chart-container text-center" >
                                                         <canvas id="portfolioChart-{{ portfolio.id }}-1"></canvas>
                                                     </div>
                                                 </div>
                                     
                                                 <!-- Second chart container -->
-                                                <div class="col-md-6 d-flex justify-content-center">
-                                                    <div class="chart-container" style="position: relative; height:40vh; width:80%; margin:auto">
+                                                <div class="col-lg-6 col-md-12 d-flex justify-content-center align-items-center">
+                                                    <div class="chart-container text-center" >
                                                         <canvas id="portfolioChart-{{ portfolio.id }}-2"></canvas>
                                                     </div>
                                                 </div>

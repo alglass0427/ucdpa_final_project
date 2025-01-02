@@ -101,6 +101,10 @@ def editAccount (request):
 def dashboard(request):
     profile = request.user.profile
     portfolios = profile.portfolio_set.all()
+    if portfolios.count() == 0:
+        messages.info(request, "You must create a portfolio before proceeding.")
+        return redirect('portfolios')  # Redirect to the page for managing portfolios
+
     assets = Asset.get_assets_by_ticker()
     print(assets)
     context = {'profile' : profile , 'portfolios': portfolios, 'assets' : assets }
