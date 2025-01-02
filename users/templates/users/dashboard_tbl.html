@@ -1,0 +1,157 @@
+<div class="container-md container_add mt-4 p-3 border rounded shadow-sm bg-light">
+    <div class="row g-3 align-items-center justify-content-around">
+        <div class="col-lg-3 col-md-6 mb-0">
+            <p class="fw-bold fs-4 text-primary text-center mb-0">Capital Available</p>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-0">
+            <p class="fw-bold fs-4 text-success text-center mb-0">{{ cash.holding_value|default:"0.00" }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Table view for larger screens -->
+<div class="table-responsive d-none d-md-block">
+    <table class="table table-striped table-bordered table-hover" id="portfolioContent">
+        <thead class="table-primary">
+            <tr class="text-center">
+                <th class="d-none d-lg-table-cell">#</th>
+                <th>Stock Symbol</th>
+                <th># Trades</th>
+                <th class="d-none d-lg-table-cell">Buy Price</th>
+                <th>Volume</th>
+                <th>Holding Cost</th>
+                <th>Current Price</th>
+                <th>% Diff</th>
+                <th class="d-none d-lg-table-cell">Stop Loss (-%)</th>
+                <th class="d-none d-lg-table-cell">Profit (+%)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+            {% if stock.asset.ticker != "CASH" %}
+            <tr class="text-center">
+                <td class="d-none d-lg-table-cell">{{ forloop.counter }}</td>
+                <td class="modal_link">{{ stock.asset.ticker }}</td>
+                <td>{{ stock.portfolio_asset.no_of_trades }}</td>
+                <td class="d-none d-lg-table-cell">{{ stock.portfolio_asset.buy_price }}</td>
+                <td>{{ stock.portfolio_asset.no_of_shares }}</td>
+                <td>{{ stock.portfolio_asset.holding_value|floatformat:4 }}</td>
+                <td>{{ stock.portfolio_asset.latest_price|floatformat:4 }}</td>
+                <td>
+                    {% if stock.percentage_diff is not None %}
+                        {% if stock.percentage_diff > 0 %}
+                            <span style="color: green;">{{ stock.percentage_diff|floatformat:2 }}%</span>
+                        {% else %}
+                            <span style="color: red;">{{ stock.percentage_diff|floatformat:2 }}%</span>
+                        {% endif %}
+                    {% else %}
+                        <span>N/A</span>
+                    {% endif %}
+                </td>
+                <td class="d-none d-lg-table-cell">{{ stock.portfolio_asset.stop_loss }}</td>
+                <td class="d-none d-lg-table-cell">{{ stock.portfolio_asset.cash_out }}</td>
+                <td>
+                    {% if stock.asset.ticker %}
+                        <button type="button" 
+                                data-url="{% url 'remove_stock' stock_code=stock.asset.ticker portfolio_id=stock.portfolio_asset.portfolio.id  %}" 
+                                class="text-danger remove-stock-btn">
+                            Sell
+                        </button>
+                    {% else %}
+                        <span>No stock code available</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Card view for smaller screens -->
+{% for stock in stocks %}
+{% if stock.asset.ticker != "CASH" %}
+
+
+<uc-modal id = "{{ stock.asset.ticker }}_modal" class="flex">
+    <div class="svg-container">
+        {{ stock.portfolio_asset.svg_content | safe }}  
+    </div>
+</uc-modal>
+
+<div class="card mb-2 d-md-none">
+    <div class="card-body">
+        <div class="row border rounded mb-2">
+            <div class="text-center border-bottom border-2 col-12 modal_link pb-1 pt-1">{{ stock.asset.ticker }}</div>
+        </div>
+
+        <div class="row border rounded">
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>Buy Price:</strong></div>
+                    <div class="col-5">{{ stock.portfolio_asset.buy_price }}</div>
+                </div>
+            </div>
+
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>Volume:</strong></div>
+                    <div class="col-5">{{ stock.portfolio_asset.no_of_shares }}</div>
+                </div>
+            </div>
+
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>Latest Px:</strong></div>
+                    <div class="col-5">{{ stock.portfolio_asset.latest_price }}</div>
+                </div>
+            </div>
+
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>% Diff:</strong></div>
+                    <div class="col-5">
+                        {% if stock.percentage_diff is not None %}
+                            {% if stock.percentage_diff > 0 %}
+                                <span style="color: green;">{{ stock.percentage_diff|floatformat:2 }}%</span>
+                            {% else %}
+                                <span style="color: red;">{{ stock.percentage_diff|floatformat:2 }}%</span>
+                            {% endif %}
+                        {% else %}
+                            <span>N/A</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>Stop Loss Px:</strong></div>
+                    <div class="col-5">{{ stock.portfolio_asset.stop_loss }}</div>
+                </div>
+            </div>
+
+            <div class="col-12 border-bottom">
+                <div class="row">
+                    <div class="col-7"><strong>Profit Px:</strong></div>
+                    <div class="col-5">{{ stock.portfolio_asset.cash_out }}</div>
+                </div>
+            </div>
+
+            <div class="text-center mb-2">
+                {% if stock.asset.ticker %}
+                    <button type="button" 
+                            data-url="{% url 'remove_stock' stock_code=stock.asset.ticker portfolio_id=stock.portfolio_asset.portfolio.id  %}" 
+                            class="text-danger remove-stock-btn">
+                        Sell
+                    </button>
+                {% else %}
+                    <span>No stock code available</span>
+                {% endif %}     
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}

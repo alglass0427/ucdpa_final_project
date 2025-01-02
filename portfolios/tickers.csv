@@ -1,0 +1,505 @@
+ticker,company_name,industry,market_cap
+CASH,Capital,INIT,0
+AAPL,Apple Inc.,Consumer Electronics,"3,356.82B"
+MSFT,Microsoft Corp.,Software - Infrastructure,"3,066.39B"
+NVDA,NVIDIA Corp.,Semiconductors,"2,629.00B"
+AMZN,"Amazon.com, Inc.",Internet Retail,"1,887.10B"
+GOOGL,Alphabet Inc.,Internet Content & Information,"1,847.36B"
+GOOG,Alphabet Inc.,Internet Content & Information,"1,835.26B"
+META,"Meta Platforms, Inc.",Internet Content & Information,"1,279.76B"
+BRK.B,Berkshire Hathaway Inc.,Insurance - Diversified,990.40B
+LLY,Eli Lilly and Co.,Drug Manufacturers - General,813.43B
+TSLA,"Tesla, Inc.",Auto Manufacturers,711.06B
+AVGO,Broadcom Inc.,Semiconductors,691.39B
+WMT,Walmart Inc.,Discount Stores,630.68B
+JPM,JPMorgan Chase & Co.,Banks - Diversified,584.65B
+UNH,UnitedHealth Group Inc.,Healthcare Plans,554.45B
+V,Visa Inc.,Credit Services,542.08B
+XOM,Exxon Mobil Corp.,Oil & Gas Integrated,490.67B
+MA,Mastercard Inc.,Credit Services,449.08B
+ORCL,Oracle Corp.,Software - Infrastructure,427.88B
+PG,The Procter & Gamble Co.,Household & Personal Products,415.53B
+JNJ,Johnson & Johnson,Drug Manufacturers - General,402.35B
+COST,Costco Wholesale Corp.,Discount Stores,396.76B
+HD,"The Home Depot, Inc.",Home Improvement Retail,367.67B
+ABBV,AbbVie Inc.,Drug Manufacturers - General,348.85B
+KO,The Coca-Cola Co.,Beverages - Non-Alcoholic,308.97B
+BAC,Bank of America Corp.,Banks - Diversified,304.76B
+MRK,"Merck & Co., Inc.",Drug Manufacturers - General,292.90B
+NFLX,"Netflix, Inc.",Entertainment,289.97B
+ADBE,Adobe Inc.,Software - Infrastructure,253.85B
+CVX,Chevron Corp.,Oil & Gas Integrated,251.22B
+PEP,"PepsiCo, Inc.",Beverages - Non-Alcoholic,244.50B
+TMO,Thermo Fisher Scientific Inc.,Diagnostics & Research,237.95B
+CRM,"Salesforce, Inc.",Software - Application,235.34B
+AMD,"Advanced Micro Devices, Inc.",Semiconductors,229.34B
+TMUS,"T-Mobile US, Inc.",Telecom Services,229.21B
+LIN,Linde plc,Specialty Chemicals,220.58B
+ACN,Accenture plc,Information Technology Services,216.92B
+MCD,McDonald's Corp.,Restaurants,209.11B
+ABT,Abbott Laboratories,Medical Devices,202.63B
+DHR,Danaher Corp.,Diagnostics & Research,197.64B
+PM,Philip Morris International Inc.,Tobacco,196.71B
+CSCO,"Cisco Systems, Inc.",Communication Equipment,195.09B
+IBM,International Business Machines Corp.,Information Technology Services,188.46B
+WFC,Wells Fargo & Co.,Banks - Diversified,184.44B
+VZ,Verizon Communications Inc.,Telecom Services,183.85B
+TXN,Texas Instruments Inc.,Semiconductors,181.81B
+GE,General Electric Co.,Aerospace & Defense,180.08B
+QCOM,QUALCOMM Inc.,Semiconductors,179.18B
+INTU,Intuit Inc.,Software - Application,176.29B
+NOW,"ServiceNow, Inc.",Software - Application,175.93B
+AMGN,Amgen Inc.,Drug Manufacturers - General,175.59B
+AXP,American Express Co.,Credit Services,174.49B
+ISRG,"Intuitive Surgical, Inc.",Medical Instruments & Supplies,171.68B
+PFE,Pfizer Inc.,Drug Manufacturers - General,168.10B
+NEE,"NextEra Energy, Inc.",Utilities - Regulated Electric,167.73B
+SPGI,S&P Global Inc.,Financial Data & Stock Exchanges,162.26B
+CAT,Caterpillar Inc.,Farm & Heavy Construction Machinery,161.54B
+DIS,The Walt Disney Co.,Entertainment,160.40B
+RTX,RTX Corp.,Aerospace & Defense,159.81B
+MS,Morgan Stanley,Capital Markets,155.69B
+GS,"The Goldman Sachs Group, Inc.",Capital Markets,155.46B
+T,AT&T Inc.,Telecom Services,155.13B
+UNP,Union Pacific Corp.,Railroads,153.11B
+CMCSA,Comcast Corp.,Telecom Services,151.57B
+PGR,The Progressive Corp.,Insurance - Property & Casualty,146.39B
+UBER,"Uber Technologies, Inc.",Software - Application,145.33B
+AMAT,"Applied Materials, Inc.",Semiconductor Equipment & Materials,145.03B
+LOW,"Lowe's Companies, Inc.",Home Improvement Retail,140.28B
+SYK,Stryker Corp.,Medical Devices,138.52B
+LMT,Lockheed Martin Corp.,Aerospace & Defense,136.11B
+TJX,"The TJX Companies, Inc.",Apparel Retail,132.96B
+HON,Honeywell International Inc.,Conglomerates,130.19B
+BLK,"BlackRock, Inc.",Asset Management,130.05B
+BKNG,Booking Holdings Inc.,Travel Services,127.97B
+ELV,"Elevance Health, Inc.",Healthcare Plans,125.63B
+REGN,"Regeneron Pharmaceuticals, Inc.",Biotechnology,122.96B
+BSX,Boston Scientific Corp.,Medical Devices,122.08B
+PLD,"Prologis, Inc.",REIT - Industrial,121.96B
+VRTX,Vertex Pharmaceuticals Inc.,Biotechnology,121.68B
+COP,ConocoPhillips,Oil & Gas Exploration & Production,120.20B
+CB,Chubb Limited,Insurance - Property & Casualty,117.45B
+NKE,"NIKE, Inc.",Footwear & Accessories,116.73B
+MDT,Medtronic plc,Medical Devices,115.97B
+SCHW,The Charles Schwab Corp.,Capital Markets,114.93B
+ETN,Eaton Corp. plc,Specialty Industrial Machinery,114.47B
+MMC,"Marsh & McLennan Companies, Inc.",Insurance Brokers,113.89B
+ADP,"Automatic Data Processing, Inc.",Software - Application,113.37B
+AMT,American Tower Corp.,REIT - Specialty,113.26B
+PANW,"Palo Alto Networks, Inc.",Software - Infrastructure,112.01B
+UPS,"United Parcel Service, Inc.",Integrated Freight & Logistics,110.63B
+C,Citigroup Inc.,Banks - Diversified,110.60B
+BX,Blackstone Inc.,Asset Management,108.23B
+ADI,"Analog Devices, Inc.",Semiconductors,107.88B
+DE,Deere & Co.,Farm & Heavy Construction Machinery,105.06B
+SBUX,Starbucks Corp.,Restaurants,104.99B
+KKR,KKR & Co. Inc.,Asset Management,103.95B
+ANET,"Arista Networks, Inc.",Computer Hardware,102.73B
+GILD,"Gilead Sciences, Inc.",Drug Manufacturers - General,101.28B
+CI,The Cigna Group,Healthcare Plans,100.48B
+MDLZ,"Mondelez International, Inc.",Confectioners,100.37B
+HCA,"HCA Healthcare, Inc.",Medical Care Facilities,99.73B
+BMY,Bristol-Myers Squibb Co.,Drug Manufacturers - General,99.34B
+FI,"Fiserv, Inc.",Information Technology Services,99.20B
+SO,The Southern Co.,Utilities - Regulated Electric,97.92B
+BA,The Boeing Co.,Aerospace & Defense,97.51B
+MU,"Micron Technology, Inc.",Semiconductors,96.01B
+KLAC,KLA Corp.,Semiconductor Equipment & Materials,95.14B
+LRCX,Lam Research Corp.,Semiconductor Equipment & Materials,93.80B
+SHW,The Sherwin-Williams Co.,Specialty Chemicals,93.49B
+ICE,"Intercontinental Exchange, Inc.",Financial Data & Stock Exchanges,92.85B
+MO,"Altria Group, Inc.",Tobacco,92.00B
+DUK,Duke Energy Corp.,Utilities - Regulated Electric,90.17B
+MCO,Moody's Corp.,Financial Data & Stock Exchanges,87.88B
+ZTS,Zoetis Inc.,Drug Manufacturers - Specialty & Generic,87.23B
+CL,Colgate-Palmolive Co.,Household & Personal Products,87.14B
+WM,"Waste Management, Inc.",Waste Management,83.01B
+GD,General Dynamics Corp.,Aerospace & Defense,82.46B
+CTAS,Cintas Corp.,Specialty Business Services,81.91B
+EQIX,"Equinix, Inc.",REIT - Specialty,81.67B
+INTC,Intel Corp.,Semiconductors,80.28B
+CME,CME Group Inc.,Financial Data & Stock Exchanges,78.64B
+TT,Trane Technologies plc,Building Products & Equipment,77.87B
+WELL,Welltower Inc.,REIT - Healthcare Facilities,77.81B
+AON,Aon plc,Insurance Brokers,76.10B
+NOC,Northrop Grumman Corp.,Aerospace & Defense,76.04B
+PH,Parker-Hannifin Corp.,Specialty Industrial Machinery,74.54B
+CMG,"Chipotle Mexican Grill, Inc.",Restaurants,74.49B
+TDG,TransDigm Group Inc.,Aerospace & Defense,73.45B
+ITW,Illinois Tool Works Inc.,Specialty Industrial Machinery,73.26B
+MSI,"Motorola Solutions, Inc.",Communication Equipment,73.10B
+APH,Amphenol Corp.,Electronic Components,72.88B
+ABNB,"Airbnb, Inc.",Travel Services,72.39B
+SNPS,"Synopsys, Inc.",Software - Infrastructure,71.63B
+CVS,CVS Health Corp.,Healthcare Plans,71.53B
+MMM,3M Co.,Conglomerates,71.17B
+ECL,Ecolab Inc.,Specialty Chemicals,71.13B
+PNC,"The PNC Financial Services Group, Inc.",Banks - Regional,70.82B
+CDNS,"Cadence Design Systems, Inc.",Software - Application,70.20B
+PYPL,"PayPal Holdings, Inc.",Credit Services,70.06B
+USB,U.S. Bancorp,Banks - Regional,69.68B
+FDX,FedEx Corp.,Integrated Freight & Logistics,69.42B
+TGT,Target Corp.,Discount Stores,68.22B
+BDX,"Becton, Dickinson and Co.",Medical Instruments & Supplies,67.97B
+EOG,"EOG Resources, Inc.",Oil & Gas Exploration & Production,67.22B
+MCK,McKesson Corp.,Medical Distribution,65.77B
+ORLY,"O'Reilly Automotive, Inc.",Specialty Retail,65.34B
+AJG,Arthur J. Gallagher & Co.,Insurance Brokers,65.23B
+CSX,CSX Corp.,Railroads,64.88B
+CARR,Carrier Global Corp.,Building Products & Equipment,64.69B
+RSG,"Republic Services, Inc.",Waste Management,64.30B
+MAR,"Marriott International, Inc.",Lodging,63.10B
+PSA,Public Storage,REIT - Industrial,62.37B
+DHI,"D.R. Horton, Inc.",Residential Construction,61.04B
+APD,"Air Products and Chemicals, Inc.",Specialty Chemicals,61.01B
+CRWD,"CrowdStrike Holdings, Inc.",Software - Infrastructure,60.86B
+AFL,Aflac Inc.,Insurance - Life,60.81B
+ROP,"Roper Technologies, Inc.",Software - Application,59.13B
+NEM,Newmont Corp.,Gold,58.60B
+NSC,Norfolk Southern Corp.,Railroads,58.28B
+FTNT,"Fortinet, Inc.",Software - Infrastructure,57.82B
+FCX,Freeport-McMoRan Inc.,Copper,57.42B
+NXPI,NXP Semiconductors N.V.,Semiconductors,57.31B
+EMR,Emerson Electric Co.,Specialty Industrial Machinery,56.47B
+TFC,Truist Financial Corp.,Banks - Regional,56.18B
+SLB,Schlumberger Limited,Oil & Gas Equipment & Services,55.84B
+CEG,Constellation Energy Corp.,Utilities - Renewable,55.71B
+GEV,GE Vernova Inc.,Utilities - Renewable,55.17B
+ADSK,"Autodesk, Inc.",Software - Application,54.74B
+AEP,"American Electric Power Co., Inc.",Utilities - Regulated Electric,54.73B
+TRV,"The Travelers Companies, Inc.",Insurance - Property & Casualty,54.55B
+O,Realty Income Corp.,REIT - Retail,54.54B
+MPC,Marathon Petroleum Corp.,Oil & Gas Refining & Marketing,54.31B
+WMB,"The Williams Companies, Inc.",Oil & Gas Midstream,54.12B
+SPG,"Simon Property Group, Inc.",REIT - Retail,53.13B
+AZO,"AutoZone, Inc.",Specialty Retail,53.06B
+OKE,"ONEOK, Inc.",Oil & Gas Midstream,53.05B
+COF,Capital One Financial Corp.,Credit Services,52.70B
+PSX,Phillips 66,Oil & Gas Refining & Marketing,52.64B
+SRE,Sempra,Utilities - Diversified,52.31B
+MET,"MetLife, Inc.",Insurance - Life,52.15B
+HLT,Hilton Worldwide Holdings Inc.,Lodging,51.92B
+CCI,Crown Castle Inc.,REIT - Specialty,51.84B
+DLR,"Digital Realty Trust, Inc.",REIT - Specialty,50.84B
+GM,General Motors Co.,Auto Manufacturers,50.32B
+KDP,Keurig Dr Pepper Inc.,Beverages - Non-Alcoholic,50.23B
+ROST,"Ross Stores, Inc.",Apparel Retail,49.97B
+PCAR,PACCAR Inc,Farm & Heavy Construction Machinery,49.42B
+BK,The Bank of New York Mellon Corp.,Asset Management,49.23B
+KMB,Kimberly-Clark Corp.,Household & Personal Products,49.23B
+MNST,Monster Beverage Corp.,Beverages - Non-Alcoholic,49.21B
+LEN,Lennar Corp.,Residential Construction,49.02B
+ALL,The Allstate Corp.,Insurance - Property & Casualty,48.70B
+D,"Dominion Energy, Inc.",Utilities - Regulated Electric,48.32B
+PAYX,"Paychex, Inc.",Software - Application,48.02B
+OXY,Occidental Petroleum Corp.,Oil & Gas Exploration & Production,47.89B
+GWW,"W.W. Grainger, Inc.",Industrial Distribution,47.54B
+CPRT,"Copart, Inc.",Specialty Business Services,47.14B
+JCI,Johnson Controls International plc,Building Products & Equipment,46.65B
+KMI,"Kinder Morgan, Inc.",Oil & Gas Midstream,46.64B
+COR,"Cencora, Inc.",Medical Distribution,46.53B
+AIG,"American International Group, Inc.",Insurance - Diversified,46.53B
+CHTR,"Charter Communications, Inc.",Telecom Services,46.09B
+URI,"United Rentals, Inc.",Rental & Leasing Services,46.01B
+STZ,"Constellation Brands, Inc.",Beverages - Brewers,45.07B
+FIS,"Fidelity National Information Services, Inc.",Information Technology Services,45.05B
+KVUE,Kenvue Inc.,Household & Personal Products,44.23B
+MSCI,MSCI Inc.,Financial Data & Stock Exchanges,44.16B
+TEL,TE Connectivity Ltd.,Electronic Components,43.80B
+FICO,Fair Isaac Corp.,Software - Application,43.69B
+LHX,"L3Harris Technologies, Inc.",Aerospace & Defense,43.49B
+VLO,Valero Energy Corp.,Oil & Gas Refining & Marketing,43.14B
+KHC,The Kraft Heinz Co.,Packaged Foods,42.92B
+AMP,"Ameriprise Financial, Inc.",Asset Management,42.71B
+IQV,IQVIA Holdings Inc.,Diagnostics & Research,42.45B
+RCL,Royal Caribbean Cruises Ltd.,Travel Services,42.24B
+GIS,"General Mills, Inc.",Packaged Foods,41.85B
+ACGL,Arch Capital Group Ltd.,Insurance - Diversified,41.79B
+HUM,Humana Inc.,Healthcare Plans,41.60B
+NDAQ,"Nasdaq, Inc.",Financial Data & Stock Exchanges,41.51B
+PCG,PG&E Corp.,Utilities - Regulated Electric,41.19B
+HSY,The Hershey Co.,Confectioners,41.03B
+ODFL,"Old Dominion Freight Line, Inc.",Trucking,40.96B
+F,Ford Motor Co.,Auto Manufacturers,40.91B
+PRU,"Prudential Financial, Inc.",Insurance - Life,40.86B
+IDXX,"IDEXX Laboratories, Inc.",Diagnostics & Research,40.59B
+MPWR,"Monolithic Power Systems, Inc.",Semiconductors,40.55B
+CMI,Cummins Inc.,Specialty Industrial Machinery,40.49B
+EW,Edwards Lifesciences Corp.,Medical Devices,40.07B
+PEG,Public Service Enterprise Group Inc.,Utilities - Regulated Electric,39.97B
+MCHP,Microchip Technology Inc.,Semiconductors,39.85B
+A,"Agilent Technologies, Inc.",Diagnostics & Research,39.36B
+FAST,Fastenal Co.,Industrial Distribution,39.21B
+VRSK,"Verisk Analytics, Inc.",Consulting Services,39.13B
+GEHC,GE HealthCare Technologies Inc.,Health Information Services,39.11B
+EXC,Exelon Corp.,Utilities - Regulated Electric,38.79B
+HES,Hess Corp.,Oil & Gas Exploration & Production,38.50B
+SYY,Sysco Corp.,Food Distribution,38.50B
+IT,"Gartner, Inc.",Information Technology Services,38.42B
+CTVA,"Corteva, Inc.",Agricultural Inputs,38.28B
+EA,Electronic Arts Inc.,Electronic Gaming & Multimedia,38.12B
+HWM,Howmet Aerospace Inc.,Aerospace & Defense,38.04B
+AME,"AMETEK, Inc.",Specialty Industrial Machinery,38.00B
+CTSH,Cognizant Technology Solutions Corp.,Information Technology Services,37.93B
+KR,The Kroger Co.,Grocery Stores,37.79B
+EXR,Extra Space Storage Inc.,REIT - Industrial,37.50B
+YUM,"Yum! Brands, Inc.",Restaurants,37.43B
+CNC,Centene Corp.,Healthcare Plans,37.35B
+RMD,ResMed Inc.,Medical Instruments & Supplies,36.95B
+OTIS,Otis Worldwide Corp.,Specialty Industrial Machinery,36.92B
+EFX,Equifax Inc.,Consulting Services,36.70B
+PWR,"Quanta Services, Inc.",Engineering & Construction,36.70B
+ED,"Consolidated Edison, Inc.",Utilities - Regulated Electric,36.17B
+DOW,Dow Inc.,Chemicals,35.54B
+VICI,VICI Properties Inc.,REIT - Diversified,35.51B
+XEL,Xcel Energy Inc.,Utilities - Regulated Electric,35.49B
+IR,Ingersoll Rand Inc.,Specialty Industrial Machinery,35.27B
+CBRE,"CBRE Group, Inc.",Real Estate Services,35.10B
+GLW,Corning Inc.,Electronic Components,35.02B
+GRMN,Garmin Ltd.,Scientific & Technical Instruments,34.70B
+HIG,"The Hartford Financial Services Group, Inc.",Insurance - Property & Casualty,34.14B
+DD,"DuPont de Nemours, Inc.",Specialty Chemicals,33.31B
+AVB,"AvalonBay Communities, Inc.",REIT - Residential,33.05B
+IRM,Iron Mountain Inc.,REIT - Specialty,33.00B
+NUE,Nucor Corp.,Steel,32.99B
+BKR,Baker Hughes Co.,Oil & Gas Equipment & Services,32.77B
+EIX,Edison International,Utilities - Regulated Electric,32.62B
+DFS,Discover Financial Services,Credit Services,32.61B
+HPQ,HP Inc.,Computer Hardware,32.25B
+CSGP,"CoStar Group, Inc.",Real Estate Services,32.21B
+TRGP,Targa Resources Corp.,Oil & Gas Midstream,31.45B
+XYL,Xylem Inc.,Specialty Industrial Machinery,31.41B
+MLM,"Martin Marietta Materials, Inc.",Building Materials,30.87B
+VMC,Vulcan Materials Co.,Building Materials,30.78B
+LYB,LyondellBasell Industries N.V.,Specialty Chemicals,30.43B
+MRNA,"Moderna, Inc.",Biotechnology,30.42B
+FANG,"Diamondback Energy, Inc.",Oil & Gas Exploration & Production,30.33B
+LULU,Lululemon Athletica Inc.,Apparel Retail,30.28B
+WEC,"WEC Energy Group, Inc.",Utilities - Regulated Electric,30.13B
+EL,The Estée Lauder Companies Inc.,Household & Personal Products,30.12B
+WTW,Willis Towers Watson Public Limited Co.,Insurance Brokers,29.68B
+MTD,Mettler-Toledo International Inc.,Diagnostics & Research,29.45B
+BRO,"Brown & Brown, Inc.",Insurance Brokers,29.45B
+ROK,"Rockwell Automation, Inc.",Specialty Industrial Machinery,29.43B
+EBAY,eBay Inc.,Internet Retail,29.34B
+PPG,"PPG Industries, Inc.",Specialty Chemicals,29.33B
+BIIB,Biogen Inc.,Drug Manufacturers - General,29.20B
+TSCO,Tractor Supply Co.,Specialty Retail,29.18B
+ON,ON Semiconductor Corp.,Semiconductors,28.97B
+LVS,Las Vegas Sands Corp.,Resorts & Casinos,28.87B
+EQR,Equity Residential,REIT - Residential,28.86B
+AWK,"American Water Works Co., Inc.",Utilities - Regulated Water,28.76B
+CDW,CDW Corp.,Information Technology Services,28.68B
+WAB,Westinghouse Air Brake Technologies Corp.,Railroads,28.62B
+ADM,Archer-Daniels-Midland Co.,Farm Products,28.02B
+NVR,"NVR, Inc.",Residential Construction,28.01B
+CAH,"Cardinal Health, Inc.",Medical Distribution,27.97B
+DAL,"Delta Air Lines, Inc.",Airlines,27.76B
+GPN,Global Payments Inc.,Specialty Business Services,27.69B
+MTB,M&T Bank Corp.,Banks - Regional,27.67B
+K,Kellanova,Packaged Foods,27.55B
+DXCM,"DexCom, Inc.",Medical Devices,27.47B
+FITB,Fifth Third Bancorp,Banks - Regional,27.42B
+PHM,"PulteGroup, Inc.",Residential Construction,27.34B
+TTWO,"Take-Two Interactive Software, Inc.",Electronic Gaming & Multimedia,27.21B
+VLTO,Veralto Corp.,Pollution & Treatment Controls,27.09B
+AXON,"Axon Enterprise, Inc.",Aerospace & Defense,27.08B
+ANSS,"ANSYS, Inc.",Software - Application,26.94B
+VTR,"Ventas, Inc.",REIT - Healthcare Facilities,26.64B
+VST,Vistra Corp.,Utilities - Independent Power Producers,26.21B
+IFF,International Flavors & Fragrances Inc.,Specialty Chemicals,26.19B
+SBAC,SBA Communications Corp.,REIT - Specialty,25.95B
+CHD,"Church & Dwight Co., Inc.",Household & Personal Products,25.90B
+ETR,Entergy Corp.,Utilities - Regulated Electric,25.88B
+DTE,DTE Energy Co.,Utilities - Regulated Electric,25.81B
+KEYS,"Keysight Technologies, Inc.",Scientific & Technical Instruments,25.47B
+FE,FirstEnergy Corp.,Utilities - Regulated Electric,25.46B
+TYL,"Tyler Technologies, Inc.",Software - Application,25.24B
+DVN,Devon Energy Corp.,Oil & Gas Exploration & Production,25.18B
+FTV,Fortive Corp.,Scientific & Technical Instruments,25.16B
+STT,State Street Corp.,Asset Management,24.93B
+HAL,Halliburton Co.,Oil & Gas Equipment & Services,24.90B
+DOV,Dover Corp.,Specialty Industrial Machinery,24.83B
+BR,"Broadridge Financial Solutions, Inc.",Information Technology Services,24.81B
+ROL,"Rollins, Inc.",Personal Services,24.51B
+STE,STERIS plc,Medical Devices,24.29B
+ES,Eversource Energy,Utilities - Regulated Electric,24.18B
+SMCI,"Super Micro Computer, Inc.",Computer Hardware,24.08B
+RJF,"Raymond James Financial, Inc.",Asset Management,23.86B
+PPL,PPL Corp.,Utilities - Regulated Electric,23.66B
+NTAP,"NetApp, Inc.",Computer Hardware,23.52B
+TROW,"T. Rowe Price Group, Inc.",Asset Management,23.02B
+TSN,"Tyson Foods, Inc.",Farm Products,22.68B
+AEE,Ameren Corp.,Utilities - Regulated Electric,22.58B
+DECK,Deckers Outdoor Corp.,Footwear & Accessories,22.54B
+SW,Smurfit Westrock Plc,Packaging & Containers,22.51B
+MKC,"McCormick & Co., Inc.",Packaged Foods,22.44B
+WRB,W. R. Berkley Corp.,Insurance - Property & Casualty,22.29B
+WY,Weyerhaeuser Co.,REIT - Specialty,22.28B
+FSLR,"First Solar, Inc.",Solar,22.09B
+CBOE,"Cboe Global Markets, Inc.",Financial Data & Stock Exchanges,22.03B
+WST,"West Pharmaceutical Services, Inc.",Medical Instruments & Supplies,22.00B
+LYV,"Live Nation Entertainment, Inc.",Entertainment,21.94B
+INVH,Invitation Homes Inc.,REIT - Residential,21.94B
+WDC,Western Digital Corp.,Computer Hardware,21.66B
+COO,"The Cooper Companies, Inc.",Medical Instruments & Supplies,21.56B
+BF.B,Brown-Forman Corp.,Beverages - Wineries & Distilleries,21.45B
+HPE,Hewlett Packard Enterprise Co.,Communication Equipment,21.41B
+CINF,Cincinnati Financial Corp.,Insurance - Property & Casualty,21.39B
+CPAY,"Corpay, Inc.",Software - Infrastructure,21.33B
+STX,Seagate Technology Holdings plc,Computer Hardware,21.33B
+ZBH,"Zimmer Biomet Holdings, Inc.",Medical Devices,21.24B
+GDDY,GoDaddy Inc.,Software - Infrastructure,21.14B
+ATO,Atmos Energy Corp.,Utilities - Regulated Gas,21.02B
+ARE,"Alexandria Real Estate Equities, Inc.",REIT - Office,20.87B
+CMS,CMS Energy Corp.,Utilities - Regulated Electric,20.67B
+CLX,The Clorox Co.,Household & Personal Products,20.63B
+LDOS,"Leidos Holdings, Inc.",Information Technology Services,20.62B
+BBY,"Best Buy Co., Inc.",Specialty Retail,20.60B
+HBAN,Huntington Bancshares Inc.,Banks - Regional,20.59B
+RF,Regions Financial Corp.,Banks - Regional,20.27B
+HUBB,Hubbell Inc.,Electrical Equipment & Parts,20.23B
+CCL,Carnival Corp. & plc,Travel Services,20.21B
+TER,"Teradyne, Inc.",Semiconductor Equipment & Materials,20.17B
+TDY,Teledyne Technologies Inc.,Scientific & Technical Instruments,20.02B
+PTC,PTC Inc.,Software - Application,19.99B
+BAX,Baxter International Inc.,Medical Instruments & Supplies,19.89B
+BLDR,"Builders FirstSource, Inc.",Building Products & Equipment,19.75B
+ESS,"Essex Property Trust, Inc.",REIT - Residential,19.68B
+MOH,"Molina Healthcare, Inc.",Healthcare Plans,19.56B
+BALL,Ball Corp.,Packaging & Containers,19.52B
+OMC,Omnicom Group Inc.,Advertising Agencies,19.48B
+WAT,Waters Corp.,Diagnostics & Research,19.39B
+MAA,"Mid-America Apartment Communities, Inc.",REIT - Residential,18.97B
+HOLX,"Hologic, Inc.",Medical Instruments & Supplies,18.95B
+GPC,Genuine Parts Co.,Auto Parts,18.81B
+EQT,EQT Corp.,Oil & Gas Exploration & Production,18.81B
+LH,Labcorp Holdings Inc.,Diagnostics & Research,18.58B
+DRI,"Darden Restaurants, Inc.",Restaurants,18.56B
+FOXA,Fox Corp.,Entertainment,18.39B
+PKG,Packaging Corp. of America,Packaging & Containers,18.27B
+PFG,"Principal Financial Group, Inc.",Asset Management,18.26B
+SYF,Synchrony Financial,Credit Services,18.20B
+CFG,"Citizens Financial Group, Inc.",Banks - Regional,18.13B
+CNP,"CenterPoint Energy, Inc.",Utilities - Regulated Electric,17.96B
+NTRS,Northern Trust Corp.,Asset Management,17.79B
+J,Jacobs Solutions Inc.,Engineering & Construction,17.77B
+DG,Dollar General Corp.,Discount Stores,17.76B
+FOX,Fox Corp.,Entertainment,17.74B
+VRSN,"VeriSign, Inc.",Software - Infrastructure,17.71B
+HRL,Hormel Foods Corp.,Packaged Foods,17.70B
+AVY,Avery Dennison Corp.,Packaging & Containers,17.65B
+ULTA,"Ulta Beauty, Inc.",Specialty Retail,17.57B
+LUV,Southwest Airlines Co.,Airlines,17.44B
+L,Loews Corp.,Insurance - Property & Casualty,17.43B
+JBHT,"J.B. Hunt Transport Services, Inc.",Integrated Freight & Logistics,17.39B
+APTV,Aptiv PLC,Auto Parts,17.34B
+EXPD,"Expeditors International of Washington, Inc.",Integrated Freight & Logistics,17.22B
+ZBRA,Zebra Technologies Corp.,Communication Equipment,17.14B
+DGX,Quest Diagnostics Inc.,Diagnostics & Research,17.07B
+EXPE,"Expedia Group, Inc.",Travel Services,17.03B
+MAS,Masco Corp.,Building Products & Equipment,17.00B
+WBD,"Warner Bros. Discovery, Inc.",Entertainment,16.99B
+ALGN,"Align Technology, Inc.",Medical Instruments & Supplies,16.79B
+STLD,"Steel Dynamics, Inc.",Steel,16.77B
+FDS,FactSet Research Systems Inc.,Financial Data & Stock Exchanges,16.68B
+CTRA,Coterra Energy Inc.,Oil & Gas Exploration & Production,16.58B
+EG,"Everest Group, Ltd.",Insurance - Reinsurance,16.49B
+IP,International Paper Co.,Packaging & Containers,16.39B
+TXT,Textron Inc.,Aerospace & Defense,16.23B
+NRG,"NRG Energy, Inc.",Utilities - Independent Power Producers,16.05B
+AMCR,Amcor plc,Packaging & Containers,15.94B
+GEN,Gen Digital Inc.,Software - Infrastructure,15.84B
+UAL,"United Airlines Holdings, Inc.",Airlines,15.82B
+PODD,Insulet Corp.,Medical Devices,15.80B
+SWKS,"Skyworks Solutions, Inc.",Semiconductors,15.72B
+CAG,"Conagra Brands, Inc.",Packaged Foods,15.72B
+KIM,Kimco Realty Corp.,REIT - Retail,15.67B
+DOC,"Healthpeak Properties, Inc.",REIT - Healthcare Facilities,15.49B
+NWS,News Corp.,Entertainment,15.35B
+CPB,Campbell Soup Co.,Packaged Foods,15.32B
+LNT,Alliant Energy Corp.,Utilities - Regulated Electric,15.16B
+UHS,"Universal Health Services, Inc.",Medical Care Facilities,15.02B
+NWSA,News Corp.,Entertainment,14.98B
+NI,NiSource Inc.,Utilities - Regulated Gas,14.95B
+UDR,"UDR, Inc.",REIT - Residential,14.93B
+IEX,IDEX Corp.,Specialty Industrial Machinery,14.87B
+RVTY,"Revvity, Inc.",Diagnostics & Research,14.75B
+SWK,"Stanley Black & Decker, Inc.",Tools & Accessories,14.75B
+KEY,KeyCorp,Banks - Regional,14.73B
+MRO,Marathon Oil Corp.,Oil & Gas Exploration & Production,14.60B
+DPZ,"Domino's Pizza, Inc.",Restaurants,14.57B
+SNA,Snap-on Inc.,Tools & Accessories,14.45B
+AKAM,"Akamai Technologies, Inc.",Software - Infrastructure,14.36B
+PNR,Pentair plc,Specialty Industrial Machinery,14.36B
+NDSN,Nordson Corp.,Specialty Industrial Machinery,14.12B
+DLTR,"Dollar Tree, Inc.",Discount Stores,13.96B
+ENPH,"Enphase Energy, Inc.",Solar,13.95B
+CF,"CF Industries Holdings, Inc.",Agricultural Inputs,13.86B
+EVRG,"Evergy, Inc.",Utilities - Regulated Electric,13.80B
+BG,Bunge Global SA,Farm Products,13.60B
+REG,Regency Centers Corp.,REIT - Retail,13.50B
+TRMB,Trimble Inc.,Scientific & Technical Instruments,13.45B
+POOL,Pool Corp.,Industrial Distribution,13.24B
+CPT,Camden Property Trust,REIT - Residential,13.06B
+VTRS,Viatris Inc.,Drug Manufacturers - Specialty & Generic,13.06B
+CE,Celanese Corp.,Chemicals,12.98B
+DVA,DaVita Inc.,Medical Care Facilities,12.86B
+JKHY,"Jack Henry & Associates, Inc.",Information Technology Services,12.75B
+JNPR,"Juniper Networks, Inc.",Communication Equipment,12.67B
+SJM,The J. M. Smucker Co.,Packaged Foods,12.66B
+INCY,Incyte Corp.,Biotechnology,12.09B
+KMX,"CarMax, Inc.",Auto & Truck Dealerships,11.95B
+SOLV,Solventum Corp.,Health Information Services,11.85B
+CHRW,"C.H. Robinson Worldwide, Inc.",Integrated Freight & Logistics,11.84B
+ALLE,Allegion plc,Security & Protection Services,11.77B
+HST,"Host Hotels & Resorts, Inc.",REIT - Hotel & Motel,11.76B
+EPAM,"EPAM Systems, Inc.",Information Technology Services,11.75B
+FFIV,"F5, Inc.",Software - Infrastructure,11.72B
+IPG,"The Interpublic Group of Companies, Inc.",Advertising Agencies,11.69B
+BXP,"BXP, Inc.",REIT - Office,11.64B
+AES,The AES Corp.,Utilities - Diversified,11.60B
+TECH,Bio-Techne Corp.,Biotechnology,11.56B
+JBL,Jabil Inc.,Electronic Components,11.55B
+TFX,Teleflex Inc.,Medical Instruments & Supplies,11.54B
+AOS,A. O. Smith Corp.,Specialty Industrial Machinery,11.43B
+EMN,Eastman Chemical Co.,Specialty Chemicals,11.40B
+TAP,Molson Coors Beverage Co.,Beverages - Brewers,11.34B
+CTLT,"Catalent, Inc.",Drug Manufacturers - Specialty & Generic,10.86B
+RL,Ralph Lauren Corp.,Apparel Manufacturing,10.60B
+MGM,MGM Resorts International,Resorts & Casinos,10.57B
+LKQ,LKQ Corp.,Auto Parts,10.26B
+HII,"Huntington Ingalls Industries, Inc.",Aerospace & Defense,10.22B
+PNW,Pinnacle West Capital Corp.,Utilities - Regulated Electric,10.16B
+BEN,"Franklin Resources, Inc.",Asset Management,10.11B
+AIZ,"Assurant, Inc.",Insurance - Specialty,9.92B
+QRVO,"Qorvo, Inc.",Semiconductors,9.82B
+FRT,Federal Realty Investment Trust,REIT - Retail,9.73B
+MKTX,MarketAxess Holdings Inc.,Capital Markets,9.72B
+CRL,"Charles River Laboratories International, Inc.",Diagnostics & Research,9.67B
+TPR,"Tapestry, Inc.",Luxury Goods,9.43B
+HAS,"Hasbro, Inc.",Leisure,9.42B
+MHK,"Mohawk Industries, Inc.","Furnishings, Fixtures & Appliances",9.37B
+MTCH,"Match Group, Inc.",Internet Content & Information,9.26B
+PAYC,"Paycom Software, Inc.",Software - Application,9.23B
+GL,Globe Life Inc.,Insurance - Life,9.16B
+ALB,Albemarle Corp.,Specialty Chemicals,9.12B
+BIO,"Bio-Rad Laboratories, Inc.",Medical Devices,9.01B
+DAY,Dayforce Inc.,Software - Application,9.00B
+LW,"Lamb Weston Holdings, Inc.",Packaged Foods,8.94B
+APA,APA Corp.,Oil & Gas Exploration & Production,8.68B
+HSIC,"Henry Schein, Inc.",Medical Distribution,8.53B
+GNRC,Generac Holdings Inc.,Specialty Industrial Machinery,8.53B
+WYNN,"Wynn Resorts, Limited",Resorts & Casinos,8.25B
+CZR,"Caesars Entertainment, Inc.",Resorts & Casinos,7.83B
+MOS,The Mosaic Co.,Agricultural Inputs,7.80B
+NCLH,Norwegian Cruise Line Holdings Ltd.,Travel Services,7.69B
+WBA,"Walgreens Boots Alliance, Inc.",Pharmaceutical Retailers,7.65B
+FMC,FMC Corp.,Agricultural Inputs,7.61B
+AAL,American Airlines Group Inc.,Airlines,7.18B
+BWA,BorgWarner Inc.,Auto Parts,7.12B
+IVZ,Invesco Ltd.,Asset Management,7.10B
+PARA,Paramount Global,Entertainment,6.70B
+ETSY,"Etsy, Inc.",Internet Retail,5.96B
+BBWI,"Bath & Body Works, Inc.",Specialty Retail,5.87B

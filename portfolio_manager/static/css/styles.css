@@ -1,0 +1,296 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 1em;
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+
+
+.container_add {
+    padding: 2em;
+    background-color: #fff;
+    margin: 1em auto;
+    max-width: 1200px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.flash {
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash.warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.flash.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.flash.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+/* --------------------------------- */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* .container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+.jumbotron {
+    background-color: #e9ecef;
+    padding: 40px;
+    border-radius: 8px;
+}
+
+.flash {
+    margin-top: 20px;
+}
+
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10%
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 10px;
+}
+
+
+
+/* ----- */
+
+.success input {
+    border-color: green;
+}
+
+.error{
+    border-color: red;
+ 
+}
+
+
+.error small {
+    color: red;
+}
+
+
+/* Ensure the SVG container is responsive */
+.svg-container {
+    width: 100%;          /* Make the container take up the full width of its parent */
+    max-width: 100%;      /* Prevent the SVG from exceeding its container's width */
+    height: auto;         /* Auto height to maintain aspect ratio */
+}
+
+/* Ensure that the SVG within the container scales properly */
+.svg-container svg {
+    width: 100%;          /* Make the SVG responsive to the container's width */
+    height: auto;         /* Maintain the aspect ratio */
+    display: block;       /* Remove any extra spacing */
+}
+
+#main{
+    width: 100%;          /* Make the SVG responsive to the container's width */
+    height: auto;         /* Maintain the aspect ratio */
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+/* .show {display:block;} */
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-undefined {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+
+/* Ensure body takes full height */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Flexbox to create a layout with a footer at the bottom */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+}
+
+.content {
+    flex: 1; /* This allows the content area to expand */
+}
+
+/* Footer styles */
+footer {
+    background-color: #343a40; /* Dark background */
+    color: #ffffff; /* White text */
+}
+
+/* Initial hidden state (fade-out) */
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  /* Visible state (fade-in) */
+  .fade-in {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .responsive-text {
+    font-size: 24px;  /* Default size for small screens */
+}
+
+
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    margin: 0 10px;
+  }
+  
+  .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .carousel-indicators li {
+    background-color: #333;
+  }
+  
+  .carousel-indicators .active {
+    background-color: #007bff;
+  }
+  
+.modal_link {
+    background-color: rgb(247, 121, 108) !important; /* Light color (default) */
+    color: whitesmoke;            /* Light text color (optional) */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.modal_link:hover {
+    background-color: #ffc107 !important; /* Highlight color (on hover) */
+    color: #212529;            /* Darker text color on hover (optional) */
+}
+
+
+@media (min-width: 576px) {
+    .responsive-text {
+        font-size: 30px;
+    }
+}
+
+@media (min-width: 768px) {
+    .responsive-text {
+        font-size: 36px;
+    }
+}
+
+@media (min-width: 992px) {
+    .responsive-text {
+        font-size: 42px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .responsive-text {
+        font-size: 48px;
+    }
+}
+
+@media (max-width: 400px) {
+    #portfolioContent  thead {
+      font-size: 0.9em;
+    }
+    #portfolioContent  tbody {
+        font-size: 0.9em;
+      }
+  }
+  
+
+  #login-section{max-width: 700px;}
+
+  .chart-container {
+    position: relative;
+    margin: auto;
+    height: 80vh;
+    width: 80vw;
+    align-items: center;
+  }

@@ -1,0 +1,8 @@
+{% for portfolio, total_investments in portfolios %}
+<tr>
+    <td>{{ loop.index }}</td>  <!-- Loop index to display row number -->
+    <td>{{ portfolio["id"] }}</td>
+    <td>{{ portfolio["portfolio_desc"] }}</td>
+    <td>{{ total_investments }}</td>  <!-- Assuming this field exists --> 
+</tr>
+{% endfor %}

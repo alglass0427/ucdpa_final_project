@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Edit Account</h1>
+<!-- <form method="POST" action="{% url 'edit-account' %}"  enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form}}
+    <input type= "submit" value="Submit"/>
+
+</form> -->
+
+<!-- Main Section -->
+<div class="container-sm container_add mt-4" id="login-section">
+    <form method="POST" autocomplete="off" action="{% url 'edit-account' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="row g-3 align-items-center">
+            
+
+        {% for field in form %}
+        
+            <div class="form-floating mb-2">
+                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.errors %}
+                    <div class="text-danger">
+                        {{ field.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        
+        {% endfor %}
+        <div class="col-lg-6 col-sm-6">
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </div>
+    
+        </div>
+        </div>
+    </form>
+
+</div>
+
+{% endblock content %}

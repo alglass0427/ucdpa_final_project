@@ -1,0 +1,122 @@
+
+
+<table class="table table-striped table-bordered" id="portfolioContent">
+    <thead class="table-primary">
+        <tr>
+            <th class="d-none d-lg-table-cell">#</th>
+            <th class="d-none d-lg-table-cell">Portfolio ID</th>
+            <th>Portfolio Name</th>
+            <th class="d-none d-lg-table-cell">Total Investments</th>
+            <th class="d-none d-lg-table-cell">Total Trades</th>
+            <th>Total Assets</th>
+            <th>Total Cash</th>
+            <th class="d-none d-md-table-cell"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for portfolio in portfolios %}
+        <tr>
+            <td class="d-none d-lg-table-cell">{{ forloop.counter }}</td>
+            <td class="d-none d-lg-table-cell">{{ portfolio.id }}</td>
+            <td>{{ portfolio.portfolio_desc }}</td>
+            <td class="d-none d-lg-table-cell">{{ portfolio.total_investments }}</td>
+            <td class="d-none d-lg-table-cell">{{ portfolio.max_trades }}</td>
+            <td>{{ portfolio.sum_investments|floatformat:4 }}</td>
+            <td>{{ portfolio.sum_cash|floatformat:4 }}</td>
+            <td class="d-none d-md-table-cell">
+                <button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{ portfolio.id }}" aria-expanded="false" aria-controls="details-{{ portfolio.id }}">
+                    Details
+                </button>
+            </td>
+        </tr>
+
+        <!-- New row for the button, visible only on SMALL screens -->
+            <tr class="d-md-none"> <!-- This row will be displayed only on small screens -->
+                <td colspan="8">
+                    <button class="btn btn-info btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{ portfolio.id }}" aria-expanded="false" aria-controls="details-{{ portfolio.id }}">
+                        Details
+                    </button>
+                </td>
+            </tr>
+
+        <!-- Portfolio details accordion -->
+        <tr class="collapse" id="details-{{ portfolio.id }}">
+            <td colspan="8">
+                <div class="accordion" id="accordion-{{ portfolio.id }}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Portfolio Assets for {{ portfolio.portfolio_desc }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="portfolioContent-{{ portfolio.id }}">
+                                    <thead class="table-success">
+                                        <tr>
+                                            <th>Ticker</th>
+                                            <th class="d-none d-md-table-cell">No. of Trades</th>
+                                            <th class="d-none d-sm-table-cell">Industry</th>
+                                            <th>Holding Value</th>
+                                            <th>Weighting</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for detail in all_details %}
+                                            {% if detail.portfolio_id == portfolio.id %}
+                                                <tr>
+                                                    <td>{{ detail.ticker }}</td>
+                                                    <td class="d-none d-md-table-cell">{{ detail.trades }}</td>
+                                                    <td class="d-none d-sm-table-cell">{{ detail.industry }}</td>
+                                                    <td>{{ detail.value|floatformat:4 }}</td>
+                                                    <td>
+                                                        {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %}
+                                                            {% if total_value != 0 %}
+                                                                0%
+                                                            {% else %}
+                                                                N/A
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                    <tr>
+                                        {% with total_value=portfolio.sum_cash|add:portfolio.sum_investments %}
+                                        <td></td>
+                                        <td class="d-none d-md-table-cell"></td>
+                                        <td class="d-none d-sm-table-cell"></td>
+                                        <td>{{ total_value|floatformat:4 }}</td>
+                                        <td>100%</td>
+                                        {% endwith %}
+                                    </tr>
+
+                                    <tr data-portfolio-id="{{ portfolio.id }}">
+                                        <td colspan="8">
+                                            <div class="row">
+                                                <!-- First chart container -->
+                                                <div class="col-md-6 d-flex justify-content-center">
+                                                    <div class="chart-container" style="position: relative; height:40vh; width:80%; margin:auto">
+                                                        <canvas id="portfolioChart-{{ portfolio.id }}-1"></canvas>
+                                                    </div>
+                                                </div>
+                                    
+                                                <!-- Second chart container -->
+                                                <div class="col-md-6 d-flex justify-content-center">
+                                                    <div class="chart-container" style="position: relative; height:40vh; width:80%; margin:auto">
+                                                        <canvas id="portfolioChart-{{ portfolio.id }}-2"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

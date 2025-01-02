@@ -1,0 +1,9 @@
+staticfiles/
+Notes/
+.env
+users/__pycache__/
+portfolios/management/commands/__pycache__/
+portfolios/__pycache__/
+portfolio_manager/__pycache__/
+charts/__pycache__/
+users/__pycache__/

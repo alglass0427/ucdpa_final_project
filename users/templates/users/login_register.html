@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}Login - Portfolio Manager{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 align-items-center">
+<div class="col-md-12">
+    <span>
+        
+    </span>
+    <span>
+        <h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
+            {% if page == 'login' %}
+            User Login
+            {% else %}
+            Register
+            {% endif %}
+
+        </h1>
+    </span>
+</div>
+</div>
+
+<div class="container-sm container_add mt-4" id="login-section">
+
+{% if page == 'login' %}
+    <form method="POST" autocomplete="off" action="">
+        {% csrf_token %}
+        
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-floating mb-2">
+                    <input type="text" class="form-control" id="email" placeholder="username" name="username" autocomplete="off">
+                    <label for="username">Username</label>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+                <div class="form-floating mb-2">
+                    <input type="password" class="form-control" id="password" placeholder="Password" name="password" autocomplete="off">
+                    <label for="password">Password</label>
+                </div>            
+            </div>
+
+        </div>
+
+            
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-12">
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% else %}
+
+    <form method="POST" autocomplete="off" action="" id = "signUpForm">
+        {% csrf_token %}
+        
+        <!-- <div class="row g-3 align-items-center"> -->
+            
+
+        {% for field in form %}
+
+
+        <div class="col-lg-12 col-md-12">
+            <div class="form-floating mb-2">
+                {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            </div>
+                {% if field.errors %}
+                    <div class="text-danger">
+                        {{ field.errors|striptags }}
+                    </div>
+                {% endif %}
+        </div> 
+        {% endfor %}
+
+        <div class="col-lg-12 col-sm-12">
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </div>
+    
+    
+    
+    </div>
+        
+        
+    </form>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/scripts.js'  %}"></script>
+
+
+{% endblock scripts %}
