@@ -152,7 +152,7 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    display: window.innerWidth > 768,  // Show legend only for larger screens
+                    display: window.innerWidth > 400,  // Show legend only for larger screens
                     
                 },
                 tooltip: {
@@ -164,7 +164,7 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
                 datalabels: {
                     display: function (context) {
                         // Show labels only on smaller screens
-                        return window.innerWidth <= 768;
+                        return window.innerWidth <= 400;
                     },
                     color: '#000',
                     align: 'end',
@@ -249,7 +249,7 @@ function removeAlertClasses(element) {
 
 
 function resizeLegend(chart) {
-    const isSmallScreen = window.innerWidth < 768; // Adjust the threshold as needed
+    const isSmallScreen = window.innerWidth < 600; // Adjust the threshold as needed
     chart.options.plugins.legend.display = !isSmallScreen; // Hide legend on small screens
     chart.update(); // Update the chart to apply changes
 }
