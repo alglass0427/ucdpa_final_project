@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-(6u8)oe75sfuckd42(u^drsyvay*uk7=x$kw0rbggd(er1sbki
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', os.environ.get('RENDER_HOSTNAME', 'ucdpa-final-project.onrender.com',)]
 
 ## allows All domains to Access API
 CORS_ALLOW_ALL_ORIGINS =  True
