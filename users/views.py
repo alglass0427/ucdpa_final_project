@@ -14,7 +14,8 @@ import json
 # Create your views here.
 
 def index(request):
-    return(HttpResponse('WELCOME!!'))
+    context = {}
+    return render(request, 'users/index.html', context)
 
 
 def loginPage(request):

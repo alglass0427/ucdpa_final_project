@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">App Dashboard</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Chart 1 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart1"></canvas>
+            </div>
+        </div>
+        <!-- Chart 2 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart2"></canvas>
+            </div>
+        </div>
+        <!-- Chart 3 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart3"></canvas>
+            </div>
+        </div>
+        <!-- Chart 4 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart4"></canvas>
+            </div>
+        </div>
+        <!-- Chart 5 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart5"></canvas>
+            </div>
+        </div>
+        <!-- Chart 6 -->
+        <div class="col d-flex justify-content-center align-items-center">
+            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                <canvas id="chart6"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Define chart configurations
+    const chartConfigs = [
+        { id: 'chart1', url: '/charts/total-users/', type: 'doughnut', title: 'Total Users' },
+        { id: 'chart2', url: '/charts/top-invested-stocks/', type: 'bar', title: 'Top 5 Invested Stocks' },
+        { id: 'chart3', url: '/charts/total-portfolio-value/', type: 'pie', title: 'Total Portfolio Value' },
+        { id: 'chart4', url: '/charts/user-growth-over-time/', type: 'line', title: 'User Growth Over Time' },
+        { id: 'chart5', url: '/charts/average-portfolio-size/', type: 'polarArea', title: 'Average Portfolio Size' },
+        { id: 'chart6', url: '/charts/top-industries/', type: 'radar', title: 'Top Industries by Value' }
+    ];
+
+    // Function to fetch data and create a chart
+    function fetchAndCreateChart(config) {
+        fetch(config.url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching data for ${config.title}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming API response structure: { labels: [], data: [] }
+                createChart(config.id, data.labels, data.data, config.title, config.type);
+            })
+            .catch(error => console.error(error));
+    }
+
+    // Iterate over the chart configurations and create each chart
+    chartConfigs.forEach(config => {
+        fetchAndCreateChart(config);
+    });
+});
+
+
+// Reusable function to create a pie chart
+function createChart(chartId, labels, data,chartTitle,chartType) {
+    const ctx = document.getElementById(chartId).getContext('2d');
+    return new Chart(ctx, {
+        type: chartType,
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 205, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(201, 203, 207, 0.2)'
+                  ],
+                  borderColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(255, 159, 64)',
+                    'rgb(255, 205, 86)',
+                    'rgb(75, 192, 192)',
+                    'rgb(54, 162, 235)',
+                    'rgb(153, 102, 255)',
+                    'rgb(201, 203, 207)'
+                  ],
+                  borderWidth: 1,
+                hoverOffset: 4
+            }]
+        },
+        options: {
+
+            layout: {
+                padding: {
+                    bottom: 20
+                }
+            },
+
+            events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
+            maintainAspectRatio: false,
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    display: window.innerWidth > 400,  // Show legend only for larger screens
+                    
+                },
+                tooltip: {
+                    // Tooltip will only receive click events
+                    enabled: true,
+                    events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
+                  },
+                
+                datalabels: {
+                    display: function (context) {
+                        // Show labels only on smaller screens
+                        return window.innerWidth <= 768;
+                    },
+                    color: '#000',
+                    align: 'end',
+                    anchor: 'end',
+                    formatter: (value, context) => {
+                        return `${context.chart.data.labels[context.dataIndex]}: ${value}`;
+                    }
+                },
+
+
+
+                title: {
+                display: true,
+                text: chartTitle //'Custom Chart Title'
+            }
+                
+
+                
+            },
+        }
+    });
+}
+
+
+
+// Function to remove all alert-* classes from an element
+function removeAlertClasses(element) {
+    // Loop through all classes of the element
+    Array.from(element.classList).forEach((className) => {
+        // Check if the class starts with "alert-"
+        if (className.startsWith('alert-')) {
+            element.classList.remove(className); // Remove the class
+        }
+    });
+}
+
+
+function resizeLegend(chart) {
+    const isSmallScreen = window.innerWidth < 768; // Adjust the threshold as needed
+    chart.options.plugins.legend.display = !isSmallScreen; // Hide legend on small screens
+    chart.update(); // Update the chart to apply changes
+}
+
+
+
+
+</script>
+{% endblock scripts %}

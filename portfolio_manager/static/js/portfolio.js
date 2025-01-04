@@ -147,7 +147,7 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
             },
 
             events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
-
+            maintainAspectRatio: false, //// Allow the chart to resize fully within its container
             responsive: true,
             plugins: {
                 legend: {
@@ -164,7 +164,7 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
                 datalabels: {
                     display: function (context) {
                         // Show labels only on smaller screens
-                        return window.innerWidth <= 400;
+                        return window.innerWidth <= 768;
                     },
                     color: '#000',
                     align: 'end',
@@ -189,52 +189,6 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
 }
 
 
-// // Reusable function to create a pie chart
-// function createBarChart(chartId, labels, data) {
-//     const ctx = document.getElementById(chartId).getContext('2d');
-//     return new Chart(ctx, {
-//         type: 'polarArea',
-//         data: {
-//             labels: labels,
-//             datasets: [{
-//                 data: data,
-//                 backgroundColor: [
-//                     '#FF6384',
-//                     '#36A2EB',
-//                     '#FFCE56',
-//                     '#4BC0C0',
-//                     '#9966FF',
-//                     '#FF9F40'
-//                 ],
-//                 hoverOffset: 4
-//             }]
-//         },
-//         options: {
-
-//             layout: {
-//                 padding: {
-//                     bottom: 20
-//                 }
-//             },
-
-//             events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove'],
-
-//             responsive: true,
-//             plugins: {
-//                 legend: {
-//                     position: 'bottom',
-//                     display: true
-//                 },
-//                 tooltip: {
-//                     // Tooltip will only receive click events
-//                     events: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']
-//                   }
-//             },
-//         }
-//     });
-// }
-
-
 
 // Function to remove all alert-* classes from an element
 function removeAlertClasses(element) {
@@ -249,7 +203,7 @@ function removeAlertClasses(element) {
 
 
 function resizeLegend(chart) {
-    const isSmallScreen = window.innerWidth < 600; // Adjust the threshold as needed
+    const isSmallScreen = window.innerWidth < 768; // Adjust the threshold as needed
     chart.options.plugins.legend.display = !isSmallScreen; // Hide legend on small screens
     chart.update(); // Update the chart to apply changes
 }

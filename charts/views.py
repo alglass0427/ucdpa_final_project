@@ -4,8 +4,13 @@ from django.shortcuts import render
 # views.py
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 from portfolios.models import Portfolio, PortfolioAsset, Asset, AssetHistory
-from django.db.models import Sum
+from users.models import Profile
+from django.db.models import Sum,Count
+from django.db.models.functions import TruncMonth,TruncDate
+from datetime import datetime, timedelta
+
 
 def portfolio_data(request, portfolio_id):
     """Return data for a specific portfolio, including its assets."""
@@ -74,3 +79,55 @@ def portfolio_asset_weighting(request, portfolio_id):
     }
 
     return JsonResponse(data, safe=False)
+
+
+########INDEX PAGE
+
+# Total Users
+def total_users(request):
+    total = User.objects.count()
+    return JsonResponse({"labels": ["Total Users"], "data": [total]})
+
+# Top 5 Invested Stocks
+def top_invested_stocks(request):
+    top_stocks = (
+        PortfolioAsset.objects.values("asset__ticker")
+        .annotate(total_value=Sum("holding_value"))
+        .order_by("-total_value")[:5]
+    )
+    labels = [stock["asset__ticker"] for stock in top_stocks]
+    data = [stock["total_value"] for stock in top_stocks]
+    return JsonResponse({"labels": labels, "data": data})
+
+# Total Portfolio Value
+def total_portfolio_value(request):
+    total_value = PortfolioAsset.objects.aggregate(total=Sum("holding_value"))["total"]
+    return JsonResponse({"labels": ["Total Value"], "data": [total_value]})
+
+# User Growth Over Time
+def user_growth_over_time(request):
+    growth = (
+        User.objects.annotate(day=TruncDate("date_joined"))
+        .values("day")
+        .annotate(total=Count("id"))
+        .order_by("day")
+    )
+    labels = [entry["day"].strftime("%Y-%m-%d") for entry in growth if entry["day"]]
+    data = [entry["total"] for entry in growth if entry["day"]]
+    return JsonResponse({"labels": labels, "data": data})
+
+# Average Portfolio Size
+def average_portfolio_size(request):
+    avg_size = PortfolioAsset.objects.aggregate(avg=Sum("holding_value") / Count("portfolio"))["avg"]
+    return JsonResponse({"labels": ["Average Size"], "data": [avg_size]})
+
+# Top Industries by Value
+def top_industries(request):
+    industries = (
+        PortfolioAsset.objects.values("asset__industry")
+        .annotate(total_value=Sum("holding_value"))
+        .order_by("-total_value")[:5]
+    )
+    labels = [industry["asset__industry"] for industry in industries]
+    data = [industry["total_value"] for industry in industries]
+    return JsonResponse({"labels": labels, "data": data})
