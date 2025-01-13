@@ -7,14 +7,24 @@ import os
 
 
 class Profile(models.Model):
+    GENDER_CHOICES = [
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Rather not say', 'Rather not say'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True,blank=True) # One User has One Profile
     username = models.CharField(max_length=200 , null=True,blank=True)
     location = models.CharField(max_length=200 , null=True,blank=True)
     name = models.CharField(max_length=200 , null=True,blank=True)
     email = models.EmailField(max_length=200 , null=True,blank=True)
+    gender = models.CharField(
+        max_length=20,
+        choices=GENDER_CHOICES,
+        default='Male',
+    )
     short_intro = models.TextField(null=True,blank=True)
     bio  = models.TextField(null=True,blank=True)
-
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True,editable=False)
 

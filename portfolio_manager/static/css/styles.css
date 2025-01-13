@@ -339,3 +339,32 @@ footer {
   .alert > .alert__close:hover {
     opacity: 0.85;
   }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    grid-template-rows: repeat(3, 1fr);   /* 3 equal rows */
+    gap: 10px;
+    width: 100%;
+    height: auto;
+    border: 2px solid #333;
+  }
+  
+  .grid-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    font-size: 20px;
+  }
+  
+  .span-item {
+    grid-row: 2 / span 2; /* Starts at row 2 and spans 2 rows */
+    grid-column: 2;       /* Occupies column 2 */
+    background-color: #ffcccb; /* Optional: Highlight the merged cell */
+  }
+
+  .responsive-text {
+    font-size: clamp(1rem, 2.5vw, 3rem); /* Responsive scaling */
+  }

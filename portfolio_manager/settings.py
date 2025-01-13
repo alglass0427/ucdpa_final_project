@@ -40,10 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'rest_framework',
+    'corsheaders',
     'portfolios.apps.PortfoliosConfig'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  ###CORS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,7 +128,8 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     # os.path.join(BASE_DIR,'static')    ###  OLD WAY
-    BASE_DIR / 'static'   ## NEW DJANGO WAY
+    BASE_DIR / 'static' ,  ## NEW DJANGO WAY
+    # BASE_DIR / 'frontend/build/static',  # Path to React's build/static
 ]
 
 #tells Django where To store the stic files from server
@@ -153,7 +157,10 @@ EMAIL_HOST_USER = 'portfoliodb.info@gmail.com'
 EMAIL_HOST_PASSWORD = 'puarodwyuydnecvv'
 
 REST_FRAMEWORK = {
-    
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (     
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
@@ -199,3 +206,28 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#         'django.request': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#         'rest_framework': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#         },
+#     },
+# }

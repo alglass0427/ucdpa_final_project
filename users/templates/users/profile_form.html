@@ -2,15 +2,14 @@
 {% load static %}
 {% block content %}
 
-<h1>Edit Account</h1>
-<!-- <form method="POST" action="{% url 'edit-account' %}"  enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form}}
-    <input type= "submit" value="Submit"/>
+<h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
+    {% if page == 'edit' %}
+            Edit Profile
+            {% else %}
+            Add Details
+            {% endif %}
+</h1>
 
-</form> -->
-
-<!-- Main Section -->
 <div class="container-sm container_add mt-4" id="login-section">
     <form method="POST" autocomplete="off" action="{% url 'edit-account' %}" enctype="multipart/form-data">
         {% csrf_token %}
@@ -36,9 +35,9 @@
         </div>
     
         </div>
-        </div>
+        
     </form>
-
 </div>
+
 
 {% endblock content %}

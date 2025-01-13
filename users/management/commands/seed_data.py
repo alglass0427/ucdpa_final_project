@@ -1,7 +1,7 @@
 import random
 from django.contrib.auth.models import User
 from users.models import Profile
-from portfolios.models import Portfolio, PortfolioAsset, Asset
+from portfolios.models import Portfolio, PortfolioAsset, Asset , Cash
 from django.core.management.base import BaseCommand
 from decimal import Decimal
 
@@ -21,7 +21,7 @@ class Command(BaseCommand):
         next_user_id = last_user.id + 1 if last_user else 1
 
         # Seed 50 users with profiles
-        for i in range(50):
+        for i in range(10):
             # Create a user
             user = User.objects.create_user(
                 username=f"user{next_user_id + i}",
@@ -38,24 +38,30 @@ class Command(BaseCommand):
             )
 
             # Add a "CASH" asset if it doesn't already exist in the portfolio
-            cash_asset = Asset.objects.filter(ticker="CASH").first()
-            if not cash_asset:
-                cash_asset = Asset.objects.create(
-                    ticker="CASH",
-                    company_name="Cash Asset",
-                    industry="Cash"
-                )
+            # cash_asset = Asset.objects.filter(ticker="CASH").first()
+            # if not cash_asset:
+            #     cash_asset = Asset.objects.create(
+            #         ticker="CASH",
+            #         company_name="Cash Asset",
+            #         industry="Cash"
+            #     )
 
-            PortfolioAsset.objects.create(
+
+
+            # PortfolioAsset.objects.create(
+            #     portfolio=portfolio,
+            #     owner=user.profile,
+            #     asset=cash_asset,
+            #     holding_value=Decimal('10000'),
+            #     no_of_shares=1,
+            #     no_of_trades=1,
+            #     comment="Initial cash balance."
+            # )
+            Cash.objects.create(
+                user=user.profile,
                 portfolio=portfolio,
-                owner=user.profile,
-                asset=cash_asset,
-                holding_value=Decimal('10000'),
-                no_of_shares=1,
-                no_of_trades=1,
-                comment="Initial cash balance."
+                balance=10000.0  # Set the initial cash balance
             )
-
             # Add at least 2 other assets to the portfolio
             for _ in range(2):
                 random_asset = random.choice(all_assets)
@@ -65,6 +71,7 @@ class Command(BaseCommand):
                     asset=random_asset,
                     holding_value=Decimal(random.uniform(500, 5000)),
                     no_of_shares=random.randint(1, 100),
+                    buy_price=(Decimal(random.uniform(500, 5000))/random.randint(1, 100)),
                     no_of_trades=random.randint(1, 10),
                     comment=f"Holding for {random_asset.company_name}."
                 )

@@ -28,3 +28,10 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# from django.views.generic import TemplateView
+
+# urlpatterns += [
+#     # Other URLs
+#     path('', TemplateView.as_view(template_name='index.html')),
+# ]

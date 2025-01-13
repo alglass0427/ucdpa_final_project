@@ -9,6 +9,8 @@ class Portfolio(models.Model):
     id = models.AutoField(primary_key=True) 
     portfolio_desc = models.TextField(null=True, blank=False) ##blank tells django wether to Allow blank on the formas for this filed
     created = models.DateTimeField(auto_now_add=True)
+    total_cash_balance = models.FloatField(default=0)  # New field to track total cash balance
+
     
     class Meta:
         # ordering = ['created'] # "-" orders by descending
@@ -17,11 +19,29 @@ class Portfolio(models.Model):
     def __str__(self):
         return self.portfolio_desc
     
-
-
     @classmethod
     def get_profiles_by_name(cls):
         return cls.objects.all().order_by('portfolio_desc')
+
+
+class Cash(models.Model):
+    portfolio = models.ForeignKey(
+        Portfolio, 
+        on_delete=models.CASCADE,
+        related_name="cash_accounts"
+    )
+    user = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name="cash_balances"
+    )
+    balance = models.FloatField(default=0)  # The cash balance for the user in this portfolio
+    currency = models.CharField(max_length=10, default="USD")  # Support for multiple currencies
+    balance = models.FloatField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.user.username} - {self.portfolio.portfolio_desc} - {self.balance} {self.currency}"
 
 
 class PortfolioAsset(models.Model):

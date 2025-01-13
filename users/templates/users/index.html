@@ -2,89 +2,225 @@
 {% load static %} 
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="text-center mb-4">App Dashboard</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Chart 1 -->
+
+
+<div class="grid-container">
+    <div class="grid-item">1</div>
+    <div class="grid-item">2</div>
+    <div class="grid-item">3</div>
+    <div class="grid-item">4</div>
+    <div class="grid-item span-item">5</div>
+    <div class="grid-item">6</div>
+    <div class="grid-item">7</div>
+    <div class="grid-item">8</div>
+   
+  </div>
+
+
+
+<div class="container mt-4" style="max-width: 1200px;">
+    <!-- <h1 class="text-center mb-1">App Dashboard</h1> -->
+    <div class="row row-cols-1 row-cols-md-3 g-4  mb-5">
+        
         <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart1"></canvas>
+            <div class="card text-center" style="width: 18rem;"
+            >
+                <div class="card-body">
+                    <h5 class="card-title">Total Portfolio Value</h5>
+                    <p class="card-text" id="totalPortfolioValue">Loading...</p>
+                </div>
             </div>
         </div>
-        <!-- Chart 2 -->
-        <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart2"></canvas>
+
+        <div class="col d-flex justify-content-center align-items-center ">
+            <div class="card text-center" style="width: 18rem;"
+            >
+                <div class="card-body">
+                    <h5 class="card-title">Average Portfolio Value</h5>
+                    <p class="card-text" id="averagePortfolioValue">Loading...</p>
+                </div>
             </div>
         </div>
-        <!-- Chart 3 -->
+
         <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart3"></canvas>
+            <div class="card text-center" style="width: 18rem;"
+            >
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text" id="totalUsers">Loading...</p>
+                </div>
             </div>
         </div>
-        <!-- Chart 4 -->
-        <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart4"></canvas>
-            </div>
+
+    </div>
+
+        
+        <div class = "container" style = "max-width: 850px;">
+            <!-- CAROUSEL -->
+        <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="d-block w-100">
+                                <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                                    <canvas id="chart1"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                                    <canvas id="chart2"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="col d-flex justify-content-center align-items-center">
+                                <div class="chart-container" style="position: relative; height:40vh; width:90%;">
+                                    <canvas id="chart3"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <!-- Chart 5 -->
-        <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart5"></canvas>
-            </div>
-        </div>
-        <!-- Chart 6 -->
-        <div class="col d-flex justify-content-center align-items-center">
-            <div class="chart-container" style="position: relative; height:40vh; width:90%;">
-                <canvas id="chart6"></canvas>
-            </div>
+
         </div>
     </div>
-</div>
+
+
+
+
+
 
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// Object to keep track of active charts
+const activeCharts = {};
+
+// Function to destroy all charts
+function destroyAllCharts() {
+    for (const chartId in activeCharts) {
+        if (activeCharts[chartId]) {
+            activeCharts[chartId].destroy();
+            delete activeCharts[chartId];
+        }
+    }
+}
+
+destroyAllCharts();
+
 document.addEventListener('DOMContentLoaded', function () {
+
+    async function fetchAndDisplayTotalPortfolioValue() {
+        try {
+            const response = await fetch('/charts/combined-dashboard-data/');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const totalValue = data.total_portfolio_value; // Adjust this to match your API response structure
+            console.log(totalValue)
+            const averageValue = data.average_portfolio_size; // Adjust this to match your API response structure
+            const totalUsers = data.total_users; // Adjust this to match your API response structure
+
+            const totalValueElement = document.getElementById('totalPortfolioValue');
+            const averagePortfolioElement = document.getElementById('averagePortfolioValue');
+            const totalUsersElement = document.getElementById('totalUsers');
+            if (totalValueElement) {
+                totalValueElement.textContent = `$${totalValue.toLocaleString()}`;
+                averagePortfolioElement.textContent = `$${averageValue.toLocaleString()}`;
+                totalUsersElement.textContent = totalUsers.toLocaleString();
+            }
+        } catch (error) {
+            console.error('Error fetching total portfolio value:', error);
+            // const totalValueElement = document.getElementById('totalPortfolioValue');
+            if (totalValueElement) {
+                totalValueElement.textContent = 'Error loading data';
+            }
+            if (averagePortfolioElement) {
+                averagePortfolioElement.textContent = 'Error loading data';
+            }
+            if (totalUsersElement) {
+                totalUsersElement.textContent = 'Error loading data';
+            }
+        }
+    }
+
+    // Call the function after the DOM has loaded
+    fetchAndDisplayTotalPortfolioValue();
+});
+
     // Define chart configurations
     const chartConfigs = [
-        { id: 'chart1', url: '/charts/total-users/', type: 'doughnut', title: 'Total Users' },
-        { id: 'chart2', url: '/charts/top-invested-stocks/', type: 'bar', title: 'Top 5 Invested Stocks' },
-        { id: 'chart3', url: '/charts/total-portfolio-value/', type: 'pie', title: 'Total Portfolio Value' },
-        { id: 'chart4', url: '/charts/user-growth-over-time/', type: 'line', title: 'User Growth Over Time' },
-        { id: 'chart5', url: '/charts/average-portfolio-size/', type: 'polarArea', title: 'Average Portfolio Size' },
-        { id: 'chart6', url: '/charts/top-industries/', type: 'bar', title: 'Top Industries by Value' }
+        // { id: 'chart1', url: '/charts/total-users/', type: 'doughnut', title: 'Total Users' },
+        { id: 'chart1', url: '/charts/top-invested-stocks/', type: 'bar', title: 'Top 10 Invested Stocks', legend:false},
+        // { id: 'chart3', url: '/charts/total-portfolio-value/', type: 'pie', title: 'Total Portfolio Value' },
+        { id: 'chart3', url: '/charts/user-growth-over-time/', type: 'line', title: 'User Growth Over Time',legend:false },
+        // { id: 'chart5', url: '/charts/average-portfolio-size/', type: 'polarArea', title: 'Average Portfolio Size' },
+        { id: 'chart2', url: '/charts/top-industries/', type: 'bar', title: 'Top Industries by Value',legend:false }
     ];
 
     // Function to fetch data and create a chart
     function fetchAndCreateChart(config) {
-        fetch(config.url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error fetching data for ${config.title}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Assuming API response structure: { labels: [], data: [] }
-                createChart(config.id, data.labels, data.data, config.title, config.type);
-            })
-            .catch(error => console.error(error));
-    }
+    fetch(config.url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching data for ${config.title}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(config.url)
 
+            // Declare labels and values outside the conditions
+            let labels = [];
+            let values = [];
+            // Transform the API response into `labels` and `data`
+            if (config.url === '/charts/top-invested-stocks/') {
+            labels = data.map(item => item.asset_ticker);
+            values = data.map(item => item.total_value);
+        }   else if (config.url === '/charts/user-growth-over-time/') {
+            labels = data.map(item => item.day);
+            values = data.map(item => item.total_users);                
+        }   else if (config.url === '/charts/top-industries/') {
+            labels = data.map(item => item.industry);
+            values = data.map(item => item.total_value); 
+                          
+
+        }
+        console.log(labels, values);
+            if (activeCharts[config.id]) {
+                activeCharts[config.id].destroy();
+            }
+            // Call the createChart function with the transformed data
+            activeCharts[config.id] = createChart(config.id, labels, values, config.title, config.type);
+        })
+        .catch(error => console.error(error));
+}
+
+// Iterate over the chart configurations and create each chart
+chartConfigs.forEach(config => {
+    fetchAndCreateChart(config);
+});
     // Iterate over the chart configurations and create each chart
     chartConfigs.forEach(config => {
         fetchAndCreateChart(config);
     });
-});
+
 
 
 // Reusable function to create a pie chart
-function createChart(chartId, labels, data,chartTitle,chartType) {
+function createChart(chartId, labels, data,chartTitle,chartType,label) {
     const ctx = document.getElementById(chartId).getContext('2d');
     return new Chart(ctx, {
         type: chartType,
@@ -115,6 +251,51 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
             }]
         },
         options: {
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function(value) {
+                                console.log(`X AXIS : ${this.getLabelForValue(value)}`)
+                                let xVal =  this.getLabelForValue(value);
+                                xVal = parseInt(xVal.replace(/,/g, ""), 10);
+                                if (!isNaN(xVal)){
+                                    if (xVal >= 10000) {
+                                    return xVal/1000 + "K"
+                                    } else {
+                                    return this.getLabelForValue(value)
+                                    }
+                            }
+                                else {
+                                    
+                                    return this.getLabelForValue(value).substr(0,10)
+                                }
+                                
+
+                            },
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                console.log(`Y AXIS : ${this.getLabelForValue(value)}`)
+                                let yVal =  this.getLabelForValue(value);
+                                yVal = parseInt(yVal.replace(/,/g, ""), 10);
+
+                                if (!isNaN(yVal)){
+                                    if (yVal >= 10000) {
+                                    return yVal/1000 + "K"
+                                    } else {
+                                    return this.getLabelForValue(value)
+                                    }
+                            }
+                                else {
+                                    
+                                    return this.getLabelForValue(value).substr(0,10)
+                                }
+                            },
+                        }
+                    }
+                },
 
             layout: {
                 padding: {
@@ -129,7 +310,7 @@ function createChart(chartId, labels, data,chartTitle,chartType) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    display: window.innerWidth > 400,  // Show legend only for larger screens
+                    display: false,  // Show legend only for larger screens
                     
                 },
                 tooltip: {

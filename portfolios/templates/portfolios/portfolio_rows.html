@@ -22,7 +22,7 @@
             <td class="d-none d-lg-table-cell">{{ portfolio.total_investments }}</td>
             <td class="d-none d-lg-table-cell">{{ portfolio.max_trades }}</td>
             <td>{{ portfolio.sum_investments|floatformat:4 }}</td>
-            <td>{{ portfolio.sum_cash|floatformat:4 }}</td>
+            <td>{{ portfolio.total_cash_balance|floatformat:4 }}</td>
             <td class="d-none d-md-table-cell">
                 <button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{ portfolio.id }}" aria-expanded="false" aria-controls="details-{{ portfolio.id }}">
                     Details
@@ -61,7 +61,7 @@
                                     </thead>
                                     <tbody>
                                         {% for detail in all_details %}
-                                            {% if detail.portfolio_id == portfolio.id %}
+                                            {% if detail.portfolio_reference == portfolio.id %}
                                                 <tr>
                                                     <td>{{ detail.ticker }}</td>
                                                     <td class="d-none d-md-table-cell">{{ detail.trades }}</td>

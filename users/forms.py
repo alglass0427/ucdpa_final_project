@@ -34,7 +34,7 @@ class ProfileForm(ModelForm,forms.Form):
     class Meta:
         model  = Profile
         # fields = '__all__'
-        fields = ['name','email','username','location','bio','short_intro',
+        fields = ['name','email','username','location','bio','short_intro','gender'
                 
                   ]
    # adds css Classes to the ClassForm

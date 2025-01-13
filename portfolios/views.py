@@ -2,11 +2,19 @@ from django.shortcuts import render
 import json
 from django.http import HttpResponse , JsonResponse
 # Create your views here.
-from django.db.utils import IntegrityError
-from .models import  Portfolio,Asset, PortfolioAsset
+# from django.db.utils import IntegrityError
+from .models import  Portfolio,Asset, PortfolioAsset, Cash
 from users.models import Profile
-from django.db import transaction
+from django.db import transaction,IntegrityError
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, Count, F, Q , Subquery, OuterRef ,Case, When, Value
+from .utils import get_latest_portfolio_prices, get_stock_price , get_latest_price 
+from django.shortcuts import get_object_or_404
+# from django.db import transaction, IntegrityError
+
 
 @csrf_exempt
 def add_stock_db(request):
@@ -26,11 +34,16 @@ def add_stock_db(request):
     print(portfolio.owner)
     # portfolio = Portfolio.query.filter_by(portfolio_desc=portfolio_name).first()
     
-    cash = Asset.objects.filter(ticker = "CASH").first()
-    capital = PortfolioAsset.objects.filter(portfolio_id = portfolio.id,asset_id = cash.id).first()
+    # cash = Asset.objects.filter(ticker = "CASH").first()
+    # capital = PortfolioAsset.objects.filter(portfolio_id = portfolio.id,asset_id = cash.id).first()
+    # capital = Cash.objects.filter(portfolio_id=portfolio.id).aggregate(total_balance=Sum('balance'))['total_balance'] or 0
+    
+    print(portfolio)
 
-    print(f"Capital : {capital.holding_value}")
-    if capital.holding_value < (float(buy_price) * float(no_of_shares)):
+    capital = portfolio.total_cash_balance
+
+    print(f"Capital : {capital}")
+    if capital < (float(buy_price) * float(no_of_shares)):
         return JsonResponse({"message": "Not Enough Capital - (Buy Price * Volume > Capital (Cash)!", "category": "danger"},status=201)
         
     if not portfolio:
@@ -65,14 +78,14 @@ def add_stock_db(request):
             holding.holding_value += float(buy_price) * float(no_of_shares)
 
             # Update the capital
-            capital.holding_value = round(
-                capital.holding_value - (float(buy_price) * float(no_of_shares)), 2
+            portfolio.total_cash_balance = round(
+                portfolio.total_cash_balance - (float(buy_price) * float(no_of_shares)), 2
             )
 
             try:
                 with transaction.atomic():  # Use atomic transaction to ensure data integrity
                     holding.save()
-                    capital.save()
+                    portfolio.save()
                 return JsonResponse({
                     "message": f"Bought Equity : {stock_code} (Buy Price : {buy_price}), Cost : {(float(buy_price) * float(no_of_shares))}",
                     "category": "success"
@@ -97,14 +110,14 @@ def add_stock_db(request):
             )
 
             # Update the capital
-            capital.holding_value = round(
-                capital.holding_value - (float(buy_price) * float(no_of_shares)), 2
+            portfolio.total_cash_balance = round(
+                portfolio.total_cash_balance - (float(buy_price) * float(no_of_shares)), 2
             )
 
             try:
                 with transaction.atomic():  # Use atomic transaction to ensure data integrity
                     portfolio_asset.save()
-                    capital.save()
+                    portfolio.save()
                 return JsonResponse({
                     "message": f"Bought Equity : {stock_code} (Buy Price : {buy_price}), Cost : {(float(buy_price) * float(no_of_shares))}",
                     "category": "success"
@@ -123,12 +136,6 @@ def add_stock_db(request):
 
 
 
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Portfolio, PortfolioAsset, Asset
-from .utils import get_latest_portfolio_prices, get_stock_price
-import json
 
 @csrf_exempt
 @login_required
@@ -148,13 +155,8 @@ def get_portfolio_assets(request):
         owner=request.user.profile
     ).first()
 
-    cash_asset = Asset.objects.filter(ticker="CASH").first()
-    cash = PortfolioAsset.objects.filter(
-        asset=cash_asset,
-        portfolio=portfolio_instance
-    ).first() if portfolio_instance else None
-
-    # Get all portfolio assets
+    cash = Cash.objects.filter(portfolio_id=portfolio_instance.id).aggregate(total_balance=Sum('balance'))['total_balance'] or 0
+    portfolio = Portfolio.objects.filter(owner=request.user.profile, portfolio_desc=portfolio_name).first()
     assets = portfolio_instance.portfolio_assets.all() if portfolio_instance else []
 
     # Update asset prices based on Yahoo Finance flag
@@ -197,17 +199,10 @@ def get_portfolio_assets(request):
     # Pass data to template
     context = {
         'stocks': stocks_data,
-        'cash': cash,
+        'cash': portfolio.total_cash_balance,
     }
     return render(request, 'users/dashboard_tbl.html', context)
 
-
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.db import transaction, IntegrityError
-from .models import PortfolioAsset, Asset  # Update with your actual model imports
-from .utils import get_latest_price 
 
 
 @login_required
@@ -219,8 +214,11 @@ def remove_stock(request, stock_code, portfolio_id):
         print(f"Portfolio to be deleted from: {portfolio_id}")
 
         # Fetch the cash asset
-        cash = get_object_or_404(Asset, ticker="CASH")
-        capital = get_object_or_404(PortfolioAsset, portfolio_id=portfolio_id, asset_id=cash.id)
+        # cash = get_object_or_404(Asset, ticker="CASH")
+        # capital = get_object_or_404(PortfolioAsset, portfolio_id=portfolio_id, asset_id=cash.id)
+        portfolio = Portfolio.objects.get(id=portfolio_id)
+        print(portfolio)
+        capital = portfolio.total_cash_balance
 
         # Fetch the asset corresponding to the stock code
         asset = Asset.objects.filter(ticker=stock_code).first()
@@ -241,10 +239,10 @@ def remove_stock(request, stock_code, portfolio_id):
         # Update capital and delete the portfolio asset
         try:
             with transaction.atomic():
-                capital.holding_value = round(
-                    float(capital.holding_value) + (float(sell_price) * float(portfolio_asset.no_of_shares))
+                portfolio.total_cash_balance = round(
+                    float(portfolio.total_cash_balance) + (float(sell_price) * float(portfolio_asset.no_of_shares))
                 )
-                capital.save()
+                portfolio.save()
                 portfolio_asset.delete()
 
             message = (f"Sold Equity: {stock_code} (Trade Price: {sell_price}), "
@@ -275,80 +273,92 @@ def portfolios(request):
     return render(request, 'portfolios/portfolios.html', context)
 
 
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Portfolio, PortfolioAsset, Asset
-from django.db.models import Sum, Count, F, Q , Subquery, OuterRef
+
 
 @login_required
 def get_all_portfolios(request):
-    # Retrieve the data sent from JavaScript (assuming it's a POST request)
-    print('DEBUG : ALAN')
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))  # Decode and parse the JSON body
         portfolio = data.get('portfolio', 'All')
-        print(portfolio)
+
         # Query for a specific portfolio or all portfolios for the current user
         if portfolio != 'All':
             portfolios = Portfolio.objects.filter(id=portfolio, owner=request.user.profile)
         else:
             portfolios = Portfolio.objects.filter(owner=request.user.profile)
 
-        # Prepare the data for CTEs (using Django's ORM aggregation methods)
+        # Prepare the data for portfolio details
         portfolio_details = portfolios.annotate(
             total_investments=Count('portfolio_assets'),
             max_trades=Sum('portfolio_assets__no_of_trades'),
-            sum_investments=Sum('portfolio_assets__holding_value',filter=~Q(portfolio_assets__asset__ticker='CASH')),
-            sum_cash=Sum('portfolio_assets__holding_value', filter=Q(portfolio_assets__asset__ticker='CASH')),
-            total_value = (Sum('portfolio_assets__holding_value'))
+            sum_investments=Sum('portfolio_assets__holding_value', filter=~Q(portfolio_assets__asset__ticker='CASH')),
+            total_value=Sum('portfolio_assets__holding_value')
         ).values(
-            'id', 'portfolio_desc', 'total_investments', 'max_trades', 'sum_investments', 'sum_cash'
+            'id', 'portfolio_desc', 'total_investments', 'max_trades', 'sum_investments', 'total_cash_balance'
         )
 
+        # Subquery for total portfolio value
+        # portfolio_total_value = PortfolioAsset.objects.filter(
+        #     portfolio=OuterRef('id')
+        # ).values('portfolio').annotate(
+        #     total_value=Sum('holding_value')
+        # ).values('total_value')
 
-        # Subquery to calculate total holding value for each portfolio
-        portfolio_total_value = PortfolioAsset.objects.filter(
-            portfolio=OuterRef('portfolio_id')
-        ).values('portfolio').annotate(
-            total_value=Sum('holding_value')
-        ).values('total_value')
+        portfolio_total_value = Portfolio.objects.filter(
+                id=OuterRef('portfolio_reference')  # Match the Portfolio ID consistently
+            ).annotate(
+                total_value=Sum('portfolio_assets__holding_value') + F('total_cash_balance')
+            ).values('total_value')
 
+        # Cash entries
+        portfolio_ids = portfolios.values_list('id', flat=True)
+        cash_entries = Portfolio.objects.filter(pk__in=portfolio_ids).annotate(
+            portfolio_reference=F('id'),
+            ticker=Value('Cash'),
+            industry=Value('Cash Balance'),
+            value=F('total_cash_balance'),
+            trades=Value(0),
+            weight=(F('total_cash_balance') / (Subquery(portfolio_total_value))) * 100
+        ).values(
+            'portfolio_reference', 'ticker', 'industry', 'value', 'trades', 'weight'
+        )
+    
+
+        # Portfolio asset details
         all_details = PortfolioAsset.objects.filter(portfolio__in=portfolios).annotate(
-            portfolio_reference =F('portfolio_id'),
+            portfolio_reference=F('portfolio_id'),
             ticker=F('asset__ticker'),
             industry=F('asset__industry'),
             value=F('holding_value'),
             trades=F('no_of_trades'),
-            weight=(F('holding_value') / Subquery(portfolio_total_value))*100
-
+            weight=(F('holding_value') / Subquery(portfolio_total_value)) * 100
         ).values(
-            'portfolio_id', 'ticker', 'industry', 'value', 'trades','weight'
+            'portfolio_reference', 'ticker', 'industry', 'value', 'trades', 'weight'
         )
 
-        # Check if we have portfolios to return
+        # Combine cash entries with portfolio assets
+        all_details = list(all_details) + list(cash_entries)
+        print(f"ALL DETAILS :  {all_details}")
+        # Check if portfolios exist
         if portfolios.exists():
-            # Render the portfolio rows template
             context = {
-            'portfolios': portfolio_details,
-            'all_details': all_details,
-            # 'industry_distribution': json.dumps(list(industry_distribution)), # Pass as a list for JSON serialization
-        }
-            for detail in all_details:
-                print(detail)
-
-            html_content = render(request, 'portfolios/portfolio_rows.html', context).content.decode('utf-8')            # return render(request, 'portfolios/portfolio_rows.html', {'portfolios': portfolio_details})
+                'portfolios': portfolio_details,
+                'all_details': all_details,
+            }
+            html_content = render(request, 'portfolios/portfolio_rows.html', context).content.decode('utf-8')
             return JsonResponse({
-                'message': None,  # No message if there are portfolios
+                'message': None,
                 'html': html_content,
-                })
+            })
         else:
-            return JsonResponse({"error": "No portfolios found",
-                                 "message": "No Portfolios Found!", 
-                                 "category": "danger"
-                                 }, status=404)
+            return JsonResponse({
+                "error": "No portfolios found",
+                "message": "No Portfolios Found!",
+                "category": "danger"
+            }, status=404)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 
 
@@ -370,22 +380,8 @@ def add_portfolio(request):
         # Check if the portfolio already exists for the current user
         if not Portfolio.objects.filter(owner=request.user.id, portfolio_desc=portfolio_desc).exists():
             # Create the new portfolio
-            new_portfolio = Portfolio(owner=request.user.profile, portfolio_desc=portfolio_desc)
+            new_portfolio = Portfolio(owner=request.user.profile, portfolio_desc=portfolio_desc , total_cash_balance = seed_capital )
             new_portfolio.save()
-
-            # Create PortfolioAsset for seed capital
-            capital = PortfolioAsset(
-                portfolio_id=new_portfolio.id,
-                asset_id=cash.id,
-                no_of_trades=1,
-                buy_price=seed_capital,
-                no_of_shares=1,
-                holding_value=seed_capital,
-                stop_loss=0,
-                cash_out=0,
-                comment="Seed Capital"
-            )
-            capital.save()
 
             # Fetch the list of portfolios for the current user
             portfolio_list = Portfolio.objects.filter(owner=request.user.id)

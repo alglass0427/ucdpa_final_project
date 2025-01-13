@@ -59,7 +59,7 @@ def registerUser(request):
             user.save()  ##then performs the save
 
             messages.success(request, "User Account Created!")
-
+                
             login(request, user)
             return redirect('edit-account')                 
         
