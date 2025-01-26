@@ -8,12 +8,14 @@
       
     
       <div class="container">
+        <form class="form" action=" {% url 'profiles' %}" method="get"  >
         <div class="row g-4 ">
           <!-- Heading -->
           <div class="col-md-6 mb-3">
             <h2 class="mb-0 text-light">User Management</h2>
           </div>
           <!-- Search Form -->
+          
           <div class="col-md-4 form-floating mb-2">
             <div class="mb-3 w-100">
               <label for="searchInput" class="form-label visually-hidden">Search Users</label>
@@ -31,9 +33,10 @@
             <div class="col-md-2 form-floating">
               <button class="btn btn-primary w-100" type="submit">Search</button>
             </div>
+          
         </div>
-
-      </div>
+      </form>
+      
     
         
       
@@ -99,7 +102,7 @@
                             <strong><i class="bi bi-gender-ambiguous"></i> - </strong> {{ profile.gender }}<br>
                             <strong><i class="bi bi-geo-alt"></i> - </strong> {{ profile.location|default:"N/A" }}<br>
                             <strong><i class="bi bi-people"></i> - </strong> {{ profile.group.name }}<br>
-                            <strong><i class="bi bi-cash"></i> - </strong> ${{ profile.balance|floatformat:2 }}
+                            <!-- <strong><i class="bi bi-cash"></i> - </strong> ${{ profile.balance|floatformat:2 }} -->
                             
                         </p>
                         {% if request.user.profile.id != profile.id %}

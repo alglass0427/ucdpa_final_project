@@ -4,6 +4,7 @@ from django.http import HttpResponse , JsonResponse
 # Create your views here.
 # from django.db.utils import IntegrityError
 from .models import  Portfolio,Asset, PortfolioAsset, Cash
+from users.models import Message
 from users.models import Group,User
 from users.models import Profile
 from django.db import transaction,IntegrityError
@@ -22,8 +23,20 @@ def investor (request):
     # page = kwargs.get('page',None)
     # profile = request.user.profile
     if request.method == "POST":
+        action = request.POST.get('action')
+        print(action)
+        if action == "Subscription":
+            print("Subscription")
+            invest_amount = request.POST.get('invest_amount', None)
+            print (invest_amount)
+        elif action == "Redemption":
+            print("Redemption")
+            invest_amount = request.POST.get('invest_amount', None)
+            invest_amount = float(invest_amount)*(-1)
+            print(invest_amount)
+
         print(request)
-        invest_amount = request.POST.get('invest_amount', None)
+        
         comment = request.POST.get('comment', None)
         portfolio_id = request.POST.get('portfolio', None)
         owner = request.POST.get('owner', None)
@@ -33,6 +46,35 @@ def investor (request):
         print("invest_amount",invest_amount)
         print("portfolio_id",portfolio_id)
         print("comment",comment)
+
+        recipient = Profile.objects.get(id=owner)
+        
+
+        try:
+            sender = request.user.profile
+        except:
+            sender = None
+        
+        
+        Message.objects.create(
+            sender=sender,
+            recipient=recipient,
+            name = request.user.profile.name,
+            email= request.user.email,
+            subject= "investment",
+            body="I add funds"
+        )
+        # if form.is_valid():
+        #     message = form.save(commit=False)
+        #     message.sender = sender
+        #     message.recipient = recipient
+
+        #     if sender:
+        #         message.name = sender.name
+        #         message.email = sender.email
+        # message.save()
+
+        messages.success(request,"Your message was sent successfully!")
 
         if not portfolio_id :
             return JsonResponse({"error": "Portfolio ID is required."}, status=400)
@@ -48,6 +90,14 @@ def investor (request):
     owners= Profile.objects.filter(group__name="Manager" ) 
     #####.order_by() with no arguments clears any default ordering applied by Django.
     print("OWNERS:::",owners)
+
+
+
+
+
+
+
+    
     
     context = {'owners':owners}
     return render(request, 'portfolios/investor.html', context)

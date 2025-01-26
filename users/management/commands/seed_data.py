@@ -4,7 +4,7 @@ from users.models import Profile
 from portfolios.models import Portfolio, PortfolioAsset, Asset , Cash
 from django.core.management.base import BaseCommand
 from decimal import Decimal
-
+from django.contrib.contenttypes.models import ContentType
 
 class Command(BaseCommand):
     help = "Seed data for User, Profile, Portfolio, and Assets."
@@ -26,7 +26,9 @@ class Command(BaseCommand):
             user = User.objects.create_user(
                 username=f"user{next_user_id + i}",
                 password="password123",
-                email=f"user{next_user_id + i}@example.com"
+                email=f"user{next_user_id + i}@example.com",
+                first_name = f"user{next_user_id + i}",
+                
             )
 
             # Profile creation handled by signal, no need to create manually
@@ -36,34 +38,19 @@ class Command(BaseCommand):
                 owner=user.profile,
                 portfolio_desc=f"Portfolio {next_user_id + i + 1}"
             )
-
-            # Add a "CASH" asset if it doesn't already exist in the portfolio
-            # cash_asset = Asset.objects.filter(ticker="CASH").first()
-            # if not cash_asset:
-            #     cash_asset = Asset.objects.create(
-            #         ticker="CASH",
-            #         company_name="Cash Asset",
-            #         industry="Cash"
-            #     )
-
-
-
-            # PortfolioAsset.objects.create(
-            #     portfolio=portfolio,
-            #     owner=user.profile,
-            #     asset=cash_asset,
-            #     holding_value=Decimal('10000'),
-            #     no_of_shares=1,
-            #     no_of_trades=1,
-            #     comment="Initial cash balance."
-            # )
+            profile = Profile.objects.get(user = user)
+            
             Cash.objects.create(
-                user=user.profile,
+
+                # user=user.profile,
+                owner_content_type=ContentType.objects.get_for_model(Profile),
                 portfolio=portfolio,
-                balance=10000.0  # Set the initial cash balance
+                balance=10000.0 , # Set the initial cash balance
+                units = 100,
+                owner_object_id = profile.id
             )
             # Add at least 2 other assets to the portfolio
-            for _ in range(2):
+            for _ in range(10):
                 random_asset = random.choice(all_assets)
                 PortfolioAsset.objects.create(
                     portfolio=portfolio,
