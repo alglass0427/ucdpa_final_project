@@ -1,3 +1,33 @@
+:root {
+    --color-main: #662c39;
+    --color-main-light: #e6faff;
+    --color-sub: #3f4156;
+    --color-sub-light: #51546e;
+    --color-sub-lighter: rgb(215, 207, 218);
+    --color-text: #737373;
+    --color-gray: #8b8b8b;
+    --color-light: #e5e7eb;
+    --color-light-gray: #767676;
+    --color-bg: #f8fafd;
+    --color-white: #fffefd;
+    --color-white-light: #f3f3f3;
+    --color-success: #359e64;
+    --color-success-bg: #def8e8;
+    --color-info: #35869e;
+    --color-info-bg: #def8eea6;
+    --color-error: #fc4b0b;
+    --color-error-bg: #fff233;
+    --font-base: 'Poppins', arial, helvetica, 'Segoe UI', roboto, ubuntu, sans-serif;
+    --font-monospace: 'Fira Code', 'Courier New', courier, monospace;
+    --font-regular: 300;
+    --font-medium: 500;
+    --font-bold: 700;
+    --generic-shadow: 1px 1px 5px #00000010;
+    --generic-transition: all 0.3s ease-in-out;
+  }
+  
+
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -149,29 +179,29 @@ body {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 /* .show {display:block;} */
 
-.alert-success {
+.alert--success {
     background-color: #d4edda;
     color: #155724;
 }
 
-.alert-undefined {
+.alert--undefined {
     background-color: #fff3cd;
     color: #856404;
 }
 
-.alert-warning {
+.alert--warning {
     background-color: #fff3cd;
     color: #856404;
 }
 
-.alert-danger {
+.alert--danger {
     background-color: #f8d7da;
     color: #721c24;
 }
 
-.alert-info {
-    background-color: #d1ecf1;
-    color: #0c5460;
+.alert--info {
+    background-color: #0c5460;
+    color: #d1ecf1;
 }
 
 
@@ -257,23 +287,23 @@ footer {
     }
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
     .responsive-text {
         font-size: 36px;
     }
-}
+} */
 
-@media (min-width: 992px) {
+/* @media (min-width: 992px) {
     .responsive-text {
         font-size: 42px;
     }
-}
+} */
 
-@media (min-width: 1200px) {
+/* @media (min-width: 1200px) {
     .responsive-text {
         font-size: 48px;
     }
-}
+} */
 
 @media (max-width: 400px) {
     #portfolioContent  thead {
@@ -305,13 +335,15 @@ footer {
     border: 1px solid var(--color-white-light);
     margin-bottom: 1rem;
     margin-right: 1rem;
+    text-align: center;
+    width: 50%;
   }
   
   .alert,
   .alert > .alert__message {
     background-color: var(--color-main-light);
     color: var(--color-main);
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: var(--font-medium);
   }
   
@@ -320,7 +352,11 @@ footer {
     background-color: var(--color-error-bg);
     color: var(--color-error);
   }
-  
+  .alert.alert--info,
+  .alert.alert--info > .alert__message {
+    background-color: var(--color-info-bg);
+    color: var(--color-info);
+  }
   .alert.alert--success,
   .alert.alert--success > .alert__message {
     background-color: var(--color-success-bg);
@@ -365,6 +401,16 @@ footer {
     background-color: #ffcccb; /* Optional: Highlight the merged cell */
   }
 
-  .responsive-text {
-    font-size: clamp(1rem, 2.5vw, 3rem); /* Responsive scaling */
-  }
+  /* .responsive-text {
+    font-size: clamp(1rem, 2.5vw, 3rem); 
+  } */
+
+
+  .alert-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050; /* Ensures it appears above other elements */
+}
+

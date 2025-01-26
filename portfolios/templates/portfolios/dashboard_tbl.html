@@ -1,10 +1,33 @@
-<div class="container-md container_add mt-4 p-3 border rounded shadow-sm bg-light">
+<!-- <div class="container-md container_add mt-4 p-3 border rounded shadow-sm bg-light">
     <div class="row g-3 align-items-center justify-content-around">
         <div class="col-lg-3 col-md-6 mb-0">
             <p class="fw-bold fs-4 text-primary text-center mb-0">Capital Available</p>
         </div>
         <div class="col-lg-3 col-md-6 mb-0">
             <p class="fw-bold fs-4 text-success text-center mb-0">{{ cash|default:"0.00" }}</p>
+        </div>
+    </div>
+</div> -->
+
+<div class="container my-2">
+    <div class="container">
+        <div class="row justify-content-center align-items-center border-bottom pb-3">
+            <div class="col-12 col-md-12 text-center text-md-start">
+                <span class="mb-0 me-4 text-primary fw-bold fs-5">Cash Available:</span>
+                <span class=" fs-4 text-success">
+                    {{ cash|default:"0.00" }}
+                </span>
+                <!-- <p class="mb-0 fs-4 text-dark">{{ user.profile.name }}</p> -->
+            </div>
+
+            <div class="col-12 col-md-12 text-center text-md-start">
+                <span class="mb-0 me-4 text-primary fw-bold fs-5">NAV Unit:</span>
+                <span class=" fs-4 text-success">
+                    {{ cash|default:"0.00" }}
+                </span>
+                <!-- <p class="mb-0 fs-4 text-dark">{{ user.profile.name }}</p> -->
+            </div>
+            
         </div>
     </div>
 </div>
@@ -53,11 +76,14 @@
                 <td class="d-none d-lg-table-cell">{{ stock.portfolio_asset.cash_out }}</td>
                 <td>
                     {% if stock.asset.ticker %}
+                        
+                        {% if is_manager %}
                         <button type="button" 
                                 data-url="{% url 'remove_stock' stock_code=stock.asset.ticker portfolio_id=stock.portfolio_asset.portfolio.id  %}" 
                                 class="text-danger remove-stock-btn">
                             Sell
                         </button>
+                        {% endif %}
                     {% else %}
                         <span>No stock code available</span>
                     {% endif %}

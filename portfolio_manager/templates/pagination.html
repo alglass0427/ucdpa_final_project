@@ -1,0 +1,61 @@
+{% if query_set.has_other_pages %} 
+              
+<div aria-label="Page Navigation">
+    <ul class="pagination justify-content-center">
+
+
+
+        {% if query_set.has_previous %}
+        <li class="page-item">
+            <a href="?page={{query_set.previous_page_number}}" 
+                class="btn page-link btn--sub" 
+                data-page="{{query_set.previous_page_number}}">
+                    &#10094;
+            </a>
+        </li> 
+        {% endif %}
+
+
+        
+        {% for page in custom_range %}
+                {% if page == project.number %}
+                    <li class="page-item">
+                        <a 
+                            href="?page={{page}}" 
+                            class="page-link" 
+                            data-page = "{{page}}"
+                        >
+                            {{page}}
+                        </a>
+                    </li> 
+                {% else %}
+                    <li class="page-item">
+                        <a 
+                            href="?page={{page}}" 
+                            class="btn page-link" 
+                            data-page="{{page}}"
+                        >
+                            {{page}}
+
+                        </a>
+                    </li> 
+                {% endif %}
+        
+        {% endfor %}
+
+        {% if query_set.has_next %}
+        <li class="page-item">
+            <a 
+                href="?page={{query_set.next_page_number}}" 
+                class="btn page-link btn--sub" 
+                data-page="{{query_set.next_page_number}}"
+            >
+                &#10095;
+            </a>
+        </li> 
+        {% endif %}
+
+        </ul>
+    </div>
+{% endif %}
+

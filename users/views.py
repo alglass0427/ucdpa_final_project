@@ -6,10 +6,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import HttpResponse , JsonResponse
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm , ProfileForm
+from .forms import CustomUserCreationForm , ProfileForm ,  MessageForm
 from .models import Profile
 from portfolios.models import Asset
 from portfolios.utils import get_latest_price
+from .utils import searchProfiles,paginateProfiles
 import json
 # Create your views here.
 
@@ -17,11 +18,21 @@ def index(request):
     context = {}
     return render(request, 'users/index.html', context)
 
+def profiles(request):
+    profiles, search_query = searchProfiles(request)
+    custom_range, profiles = paginateProfiles(request, profiles, 3)
+    # profiles = Profile.objects.all()
+    context = {'profiles':profiles,'search_query':search_query, 'custom_range': custom_range}
+    for profile in profiles:
+        print("NAME: ", profile.name, "GROUP: ", profile.group.name )
+
+    print ('END OF VIEW')
+    return render(request, 'users/profiles.html', context)
 
 def loginPage(request):
 
     page = 'login'
-
+    
     if request.user.is_authenticated:
         return redirect('dashboard')
     if request.method == 'POST':
@@ -59,7 +70,7 @@ def registerUser(request):
             user.save()  ##then performs the save
 
             messages.success(request, "User Account Created!")
-                
+
             login(request, user)
             return redirect('edit-account')                 
         
@@ -80,7 +91,8 @@ def logoutUser(request):
 
 
 @login_required(login_url='login')
-def editAccount (request):
+def editAccount (request,page=None):
+    # page = kwargs.get('page',None)
     profile = request.user.profile
     print(profile)
     form  = ProfileForm(instance=profile)
@@ -93,42 +105,61 @@ def editAccount (request):
             return redirect ('dashboard')
     
     # form = ProfileForm()
-    context = {'form':form}
+    context = {'form':form,'page':page}
     return render(request, 'users/profile_form.html', context)
 
 
 
 @login_required(login_url='login')
-def dashboard(request):
+def inbox (request):
     profile = request.user.profile
-    portfolios = profile.portfolio_set.all()
-    if portfolios.count() == 0:
-        messages.info(request, "You must create a portfolio before proceeding.")
-        return redirect('portfolios')  # Redirect to the page for managing portfolios
+    messageRequests = profile.messages.all()  ## "messages" in this case is The related name from the Model -   no need for _set
+    unreadCount = messageRequests.filter(is_read=False).count()
+    context = {'messageRequests':messageRequests,'unreadCount':unreadCount}
+    return render(request, 'users/inbox.html', context)
 
-    assets = Asset.get_assets_by_ticker()
-    print(assets)
-    context = {'profile' : profile , 'portfolios': portfolios, 'assets' : assets }
-    return render(request, 'users/dashboard.html', context)
 
-# @csrf_exempt
-def get_bid_offer(request):
+# @login_required(login_url='login')
+@login_required(login_url='login')
+def viewMessage (request,pk):
+    profile = request.user.profile
+    message = profile.messages.get(id=pk)
+    if message.is_read == False:
+        message.is_read = True
+        message.save()
+    context = {'message': message, 'profile':profile}
+
+    ##{{message.name}}
+    return render(request, 'users/message.html', context)
+
+def createMessage (request,pk):
+    recipient = Profile.objects.get(id=pk)
+    form = MessageForm
+
+    try:
+        sender = request.user.profile
+    except:
+        sender = None
+    
     if request.method == 'POST':
-        print("Request Body:", request.body)
-        # data = request.get_json() # retrieve the data sent from JavaScript
-        data = json.loads(request.body)
-        print("Parsed Data:", data)
-        print(f"Ticker : {data}")
-        ticker = data['ticker']
-        if ticker  ==  "":
-            return JsonResponse({'last_quote': "NA" , "message": "Please Select a ticker to refresh prices!", "category": "success"})
-    else:
-        # If using a GET request, retrieve portfolio from the query string
-        ticker = request.args.get('ticker')
-    print(ticker)
-    last_quote = get_latest_price(ticker)
-    # return jsonify({"message": "Asset added successfully!", "category": "success"}), 201
-    return JsonResponse({'last_quote': last_quote , "message": "Asset added successfully!", "category": "success"})
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = sender
+            message.recipient = recipient
+
+            if sender:
+                message.name = sender.name
+                message.email = sender.email
+            message.save()
+
+            messages.success(request,"Your message was sent successfully!")
+            return redirect('profiles')
+    
+    context = {'recipient':recipient , 'form':form}
+
+    ##{{message.name}}
+    return render(request, 'users/message-form.html', context)
 
 
 

@@ -6,12 +6,10 @@ from django.http import HttpResponse ,  HttpRequest , JsonResponse
 from django.contrib.auth.models import User
 from users.forms import CustomUserCreationForm , ProfileForm
 from .models import Profile
-from portfolios.models import Asset ,AssetHistory , PortfolioAsset  
+from portfolios.models import Asset ,AssetHistory , PortfolioAsset  ,Portfolio
 import os
 import io
 from django.db.models import Max
-
-
 import yfinance as yf
 from datetime import datetime, timedelta, date
 
@@ -19,18 +17,35 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('Agg')  # Use the Agg backend
 import pandas as pd
-from yahooquery import Ticker
-from concurrent.futures import ThreadPoolExecutor
+# from yahooquery import Ticker
+# from concurrent.futures import ThreadPoolExecutor
 CURRENT_DIR =  os.getcwd()
 
 
 
-from sqlalchemy import func
+# from sqlalchemy import func
+def is_manager(user):
+    profile = user.profile
+    return profile.group.name == 'Manager' if profile.group else False
 
 ###################################################################################
 ####GET SINGLE LATEST PRICE
 ###################################################################################
-def get_latest_price (ticker):
+def get_latest_price (ticker,asset,portfolio):
+
+    if portfolio != '':
+        print('THIS IS A PORTFOLIO' , portfolio , "ASSET", asset)
+        portfolio = Portfolio.objects.get(id=portfolio)
+        asset_value = portfolio.total_holding_value()
+        cash_value = portfolio.total_cash_balance
+        total_value = asset_value + cash_value
+        price  = total_value/portfolio.units
+
+        print(total_value , asset_value ,cash_value , price , portfolio.units )
+        return price
+    else:
+        print('THIS IS NOT A PORTFOLIO' , portfolio , "ASSET", asset)
+    print("TICKER",ticker)
     stock = yf.Ticker(ticker)
     stock_info = stock.history(period="1d", actions=False,rounding=True)
     print(stock_info)
@@ -52,12 +67,13 @@ def get_latest_portfolio_prices(portfolio):
 
     print(portfolio_assets)
     # Extract tickers from the portfolio assets
-    tickers = [asset.asset.ticker for asset in portfolio_assets if asset.asset.ticker != "CASH"]
+    tickers = [asset.asset.ticker for asset in portfolio_assets if asset.asset.is_portfolio != True]
+
     if not tickers:
         # If no tickers are provided, return an empty dictionary or handle accordingly
         print("No stocks available in the portfolio.")
         return {}
-
+    print(tickers)
     # Fetch the latest stock prices from Yahoo Finance
     ticker_data = yf.download(tickers, period="1d", interval="1d" ,actions=False,rounding=True)
     closing_prices = ticker_data['Close'].iloc[-1]  # Get the last available row (latest data)
@@ -92,8 +108,21 @@ def get_stock_price(stock_code,asset_id,portfolio,yf_flag,user_id,buy_price):
     print(f"yf_flag {yf_flag}")
     print(f"user_id {user_id}")
     print(f"buy_price {buy_price}")
-    if yf_flag == 'on' and stock_code != "CASH":
- 
+    chk_ast = Asset.objects.get(id=asset_id)
+    print("CHECK::::::::::",chk_ast.is_portfolio)
+    if chk_ast.is_portfolio == True:
+        print('THIS IS A PORTFOLIO' , chk_ast.portfolio)
+        portfolio = Portfolio.objects.get(id=chk_ast.portfolio.id)
+        asset_value = portfolio.total_holding_value()
+        cash_value = portfolio.total_cash_balance
+        total_value = asset_value + cash_value
+        price  = total_value/portfolio.units
+
+        print(total_value , asset_value ,cash_value , price , portfolio.units )
+        return ((stock_code,price,""))
+    
+    if yf_flag == 'on'  and chk_ast.is_portfolio != True:
+        
         try:
             max_date = get_max_date_for_asset(asset_id)
             if max_date is None:
@@ -270,3 +299,139 @@ def get_stock_price(stock_code,asset_id,portfolio,yf_flag,user_id,buy_price):
         return (stock_code,round(stock_info['Close'].iloc[-1], 2),stock.isin)  # Get the last closing price
     else:
         return (("Invalid Ticker","",""))
+    
+
+
+
+
+
+
+
+
+
+
+from django.db import transaction
+from django.db.models import F
+from django.contrib.contenttypes.models import ContentType
+from .models import Cash
+
+def handle_cash_update_or_create(asset, buy_price, no_of_shares, new_units, managed_portfolio,buy_or_sell):
+    # Use transaction.atomic to ensure all changes are committed atomically
+    print(new_units," :  NEW UNITS IN HANDLE")
+    with transaction.atomic():
+        # Attempt to update or create the Cash entry
+        cash, created = Cash.objects.update_or_create(
+            portfolio=asset.portfolio,
+            owner_content_type=ContentType.objects.get_for_model(Portfolio),
+            owner_object_id=managed_portfolio.id,
+            defaults={
+                "currency": "USD",  # Default value for currency, not balance or units
+            }
+        )
+
+        # If it's created, initialize balance and units
+        if created:
+            previous_balance = 0
+            previous_units = 0
+            cash.balance = float(buy_price) * float(no_of_shares)
+            cash.units = new_units
+            cash.save()
+            print(f"Created new Cash entry for portfolio {asset.portfolio.id} with balance {cash.balance} and Owner {managed_portfolio.id}.")
+            
+        else:
+            # Retrieve previous values before saving the updated instance
+            previous_balance = cash.balance
+            previous_units = cash.units
+
+            # Increment balance and units for the existing instance
+            if buy_or_sell == 'BUY':
+                cash.balance += float(buy_price) * float(no_of_shares)
+                cash.units += new_units
+            else:
+                cash.balance -= float(buy_price) * float(no_of_shares)
+                cash.units += new_units
+            cash.save()
+
+            # Calculate the difference in balance and units
+            balance_diff = cash.balance - previous_balance
+            print("CASH DIFF",balance_diff)
+            units_diff = cash.units - previous_units
+            print(f"Updated Cash entry for portfolio {asset.portfolio.id} with balance diff {balance_diff} and units diff {units_diff}.")
+
+        # Perform Portfolio update with the diff values (regardless of create or update)
+        balance_diff = cash.balance - previous_balance
+        print(f"BALANCE: DIFF : {balance_diff}")
+        units_diff = cash.units - previous_units
+        Portfolio.objects.filter(id=asset.portfolio.id).update(
+            total_cash_balance=F('total_cash_balance') + balance_diff,
+            units=F('units') + units_diff
+        )
+
+        Portfolio.objects.filter(id=managed_portfolio.id).update(
+            total_cash_balance=F('total_cash_balance') - balance_diff,
+            units=F('units') + units_diff
+        )
+
+    return cash
+
+
+
+
+def handle_cash_update_or_create_investor(portfolio, buy_price, no_of_shares, new_units,profile,buy_or_sell):
+    # Use transaction.atomic to ensure all changes are committed atomically
+    print(new_units," :  NEW UNITS IN HANDLE")
+    with transaction.atomic():
+        # Attempt to update or create the Cash entry
+        cash, created = Cash.objects.update_or_create(
+            portfolio=portfolio,
+            owner_content_type=ContentType.objects.get_for_model(Profile),
+            owner_object_id=profile,
+            defaults={
+                "currency": "USD",  # Default value for currency, not balance or units
+            }
+        )
+
+        # If it's created, initialize balance and units
+        if created:
+            previous_balance = 0
+            previous_units = 0
+            cash.balance = float(buy_price) * float(no_of_shares)
+            cash.units = new_units
+            cash.save()
+            print(f"Created new Cash entry for portfolio {portfolio} with balance {cash.balance} and Owner {profile}.")
+            
+        else:
+            # Retrieve previous values before saving the updated instance
+            previous_balance = cash.balance
+            previous_units = cash.units
+
+            # Increment balance and units for the existing instance
+            if buy_or_sell == 'BUY':
+                cash.balance += float(buy_price) * float(no_of_shares)
+                cash.units += new_units
+            else:
+                cash.balance -= float(buy_price) * float(no_of_shares)
+                cash.units += new_units
+            cash.save()
+
+            # Calculate the difference in balance and units
+            balance_diff = cash.balance - previous_balance
+            print("CASH DIFF",balance_diff)
+            units_diff = cash.units - previous_units
+            print(f"Updated Cash entry for portfolio {portfolio} with balance diff {balance_diff} and units diff {units_diff}.")
+
+        # Perform Portfolio update with the diff values (regardless of create or update)
+        balance_diff = cash.balance - previous_balance
+        print(f"BALANCE: DIFF : {balance_diff}")
+        units_diff = cash.units - previous_units
+        Portfolio.objects.filter(id=portfolio).update(
+            total_cash_balance=F('total_cash_balance') + balance_diff,
+            units=F('units') + units_diff
+        )
+
+        # Portfolio.objects.filter(id=managed_portfolio.id).update(
+        #     total_cash_balance=F('total_cash_balance') - balance_diff,
+        #     units=F('units') + units_diff
+        # )
+
+    return cash

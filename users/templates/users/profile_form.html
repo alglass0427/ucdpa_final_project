@@ -4,14 +4,14 @@
 
 <h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
     {% if page == 'edit' %}
-            Edit Profile
-            {% else %}
-            Add Details
-            {% endif %}
+        Edit Profile
+    {% else %}
+        Add Details
+    {% endif %}
 </h1>
 
 <div class="container-sm container_add mt-4" id="login-section">
-    <form method="POST" autocomplete="off" action="{% url 'edit-account' %}" enctype="multipart/form-data">
+    <form method="POST" autocomplete="off" action="{% url 'edit-account' page=None %}" enctype="multipart/form-data">
         {% csrf_token %}
         
         <div class="row g-3 align-items-center">
@@ -30,8 +30,14 @@
             </div>
         
         {% endfor %}
-        <div class="col-lg-6 col-sm-6">
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">
+            {% if page == 'edit' %}
+                Save
+            {% else %}
+                Register
+            {% endif %}
+            </button>
         </div>
     
         </div>

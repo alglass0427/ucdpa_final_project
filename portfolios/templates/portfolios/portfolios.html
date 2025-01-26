@@ -4,47 +4,53 @@
 
 {% block content %}
 <h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
-    <span class="d-none d-sm-block">Portfolio Edit</span>
+    <span class="d-none d-sm-block">Portfolio</span>
     <span class="d-block d-sm-none">Portfolio</span>
 </h1>
 
 <div class="container-sm container_add mt-2">
-    <form action="{% url 'portfolios' %}" method="POST" id="selectPortfolio">
-        {% csrf_token %}
-        <div class="row g-3 d-flex justify-content-between align-items-center">
-            <div class="col-lg-3 col-md-12 align-items-center">
-                <span class="d-none d-sm-block">{{ user.profile.name }} - Portfolios</span>
-                <span class="d-block d-sm-none">{{ user.profile.name }}</span>
-            </div>
-
-            <div class="col-lg-7 col-md-12">
-                <select title="portfolio" id="portfolioList" class="form-control" name="portfolio_id">
-                    <option>All</option>
-                    {% for portfolio in portfolios %}
-                        <option value="{{ portfolio.id }}">{{ portfolio.portfolio_desc }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="col-lg-2 col-md-12">
-                <div id="refreshButton" data-url="{% url 'get_all_portfolios' %}" class="btn btn-primary w-100">
-                    Refresh
+    <div class="container">
+        <div class="container my-2">
+            <div class="row justify-content-center align-items-center border-bottom pb-3">
+                <div class="col-12 col-md-6 text-center text-md-start">
+                    <p class="mb-1 text-primary fw-bold fs-5">User</p>
+                    <p class="mb-0 fs-4 text-dark">{{ user.profile.name }}</p>
+                </div>
+                <div class="col-12 col-md-6 text-center text-md-end">
+                    <p class="mb-1 text-primary fw-bold fs-5">Balance</p>
+                    <p class="mb-0 fs-4 text-success">
+                        ${{ user.profile.balance|default:"0.00" }}
+                    </p>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+    
 </div>
-
-<div class="container container_add mt-2">
+<div class="container-sm container mt-2">
+<div class="row justify-content-center align-items-center border-bottom pb-3">
+    <div class="col-12 col-md-12 text-center text-md-start">
+        
+        <p class="mb-0 fs-4 text-dark">Create</p>
+    </div>
+</div>
+</div>
+<!-- <div class="container container_add mt-2"> -->
+<div class="container-sm container_add mt-2">
+    
     <form action="{% url 'add_portfolio' %}" method="POST" id="addPortfolio">
         {% csrf_token %}
         <div class="row g-3 align-items-center">
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-5 col-md-12">
                 <input type="text" class="form-control" name="portfolio_desc" placeholder="Portfolio Name" required>
             </div>
 
-            <div class="col-lg-3 col-md-12">
+            <div class="col-lg-2 col-md-6">
                 <input type="number" class="form-control" name="seed_capital" placeholder="Seed Capital" required>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <input type="number" class="form-control" name="units" placeholder="Units" required>
             </div>
 
             <div class="col-lg-3 col-md-12">
@@ -61,7 +67,52 @@
         </button>
       </div>
 
-    <div id = "tableSection"> 
+      <div class="container-sm container mt-2">
+        <div class="row justify-content-center align-items-center border-bottom pb-3">
+            <div class="col-12 col-md-12 text-center text-md-start">
+                
+                <p class="mb-0 fs-4 text-dark">View</p>
+            </div>
+        </div>
+        </div>
+        <div class="container-sm container_add mt-2">
+        <form action="{% url 'portfolios' %}" method="POST" id="selectPortfolio">
+            {% csrf_token %}
+            <div class="row g-3 d-flex justify-content-between align-items-center">
+                
+                
+                
+                <!-- <div class="row g-3 align-items-center justify-content-around">
+                    <div class="col-lg-3 col-md-6 mb-0">
+                        <p class="fw-bold fs-4 text-primary text-center mb-0">Balance Available</p>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-0">
+                        <p class="fw-bold fs-4 text-success text-center mb-0">{{ user.profile.balance|default:"0.00" }}</p>
+                    </div>
+                </div> -->
+            <!-- <div class="row d-flex justify-content-between align-items-center">  -->
+    
+            
+    
+                <div class="col-lg-9 col-md-12">
+                    <select title="portfolio" id="portfolioList" class="form-control" name="portfolio_id">
+                        <option>All</option>
+                        {% for portfolio in portfolios %}
+                            <option value="{{ portfolio.id }}">{{ portfolio.portfolio_desc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+    
+                <div class="col-lg-3 col-md-12">
+                    <div id="refreshButton" data-url="{% url 'get_all_portfolios' %}" class="btn btn-primary w-100">
+                        Refresh
+                    </div>
+                </div>
+            <!-- </div> -->
+        </div>
+        </form>
+        </div>
+      <div id = "tableSection"> 
 
 <div class="table-responsive" id="portfolioDisplay">
 

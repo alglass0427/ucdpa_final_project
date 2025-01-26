@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+<!-- {% load static %} -->
+{% block content %}
+    
+  <!-- Main Section -->
+  <main class="container-sm my-5" style="max-width: 800px;">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <a class="btn btn-primary" href="{% url 'inbox' %}">&#10094; Back to Inbox</a>
+      </div>
+      <div class="card-body">
+        <!-- Message Subject -->
+        <div class="row border-bottom pb-3">
+          <div class="col-12 text-md-start">
+            <p class="mb-1 text-primary fw-bold fs-4">{{ message.subject }}</p>
+          </div>
+        </div>
+  
+        <!-- Message Author -->
+        <div class="row py-3">
+          <div class="col-12 text-md-start">
+            {% if message.sender %}
+            <a href="{% url 'profiles' %}" class="text-decoration-none fw-semibold text-primary">{{ message.name }}</a>
+            {% else %}
+            <p class="fw-semibold text-secondary">{{ message.name }}</p>
+            {% endif %}
+          </div>
+        </div>
+  
+        <!-- Message Date -->
+        <p class="text-muted small">{{ message.created }}</p>
+  
+        <!-- Message Body -->
+        <div class="row py-3">
+          <div class="col-12 text-md-start">
+            <p>{{ message.body|linebreaksbr }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  {% endblock content %}

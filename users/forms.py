@@ -34,9 +34,9 @@ class ProfileForm(ModelForm,forms.Form):
     class Meta:
         model  = Profile
         # fields = '__all__'
-        fields = ['name','email','username','location','bio','short_intro','gender'
+        fields = ['name','group','email','username','location','bio','short_intro','gender','balance']
                 
-                  ]
+        #           ]
    # adds css Classes to the ClassForm
 
     def __init__(self,*args,**kwargs):
@@ -56,4 +56,7 @@ class MessageForm(ModelForm):
     def __init__(self,*args,**kwargs):
         super(MessageForm,self).__init__(*args,**kwargs)
         for name,field in self.fields.items():
-            field.widget.attrs.update({'class':'input'})
+            field.widget.attrs.update({
+                'class': 'form-control',
+                'placeholder': field.label
+                })

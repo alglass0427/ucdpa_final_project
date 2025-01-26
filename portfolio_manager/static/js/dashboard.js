@@ -90,12 +90,18 @@ function applyEventListeners () {
         
                     // Get the selected portfolio
                     const portfolio = document.getElementById('portfolioList').value;
-        
+                    let portfolioList = document.getElementById('portfolioList');
+                    const selectedOption = portfolioList.options[portfolioList.selectedIndex];
+                    console.log(portfolioList.options)
+                    console.log(selectedOption)
+                    
                     // Get URL from the data attribute of the button
                     const url = this.dataset.url;
-        
+                    let portfolioID  = selectedOption.getAttribute("data-id")
+                    let portfolioOwner  = selectedOption.getAttribute("data-owner")
+                    
                     console.log(url);
-        
+                    console.log(portfolioID);
                     // Get CSRF token from the page
                     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
@@ -136,11 +142,19 @@ function applyEventListeners () {
 
 document.getElementById('addStockButton').addEventListener('click', function() {
     console.log('INSIDE THE API')
-    fieldCheck  =  allFieldsValid()
+    fieldCheck  =  allFieldsValid();
+    tickerSelect =  document.getElementById('stockDropdown');
+    let ticker = tickerSelect.value;
+    const selectedOption = tickerSelect.options[tickerSelect.selectedIndex];
+    let assetID =  selectedOption.getAttribute('data-id');
+    let portfolioID =  selectedOption.getAttribute('data-portfolio');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     if (fieldCheck === true){
         console.log(fieldCheck)
     const assetData = {
-        stock_code: document.getElementById('stockDropdown').value,
+        asset_id: assetID,
+        portfolio_id: portfolioID,
+        stock_code: ticker,
         buy_price: document.getElementById('buyPrice').value,
         no_of_shares: document.getElementById('noOfShares').value,
         stop_loss: document.getElementById('stopLoss').value,
@@ -152,7 +166,9 @@ document.getElementById('addStockButton').addEventListener('click', function() {
     fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken  // Include CSRF token in the header
+
         },
         body: JSON.stringify(assetData)
     })
@@ -193,58 +209,71 @@ document.getElementById('addStockButton').addEventListener('click', function() {
 
 document.getElementById('sellStockButton').addEventListener('click', function() {
     yahooFinanceSwitch = document.getElementById("yahooFinance");
-    yahooFinanceSwitch.checked = false
-    console.log('INSIDE SELL STOCK THE API')
-    fieldCheck  =  allFieldsValid()
-    if (fieldCheck === true){
-        console.log(fieldCheck)
-    const assetData = {
-        stock_code: document.getElementById('stockDropdown').value,
-        buy_price: document.getElementById('buyPrice').value,
-        no_of_shares: document.getElementById('noOfShares').value,
-        stop_loss: document.getElementById('stopLoss').value,
-        cash_out: document.getElementById('cashOut').value,
-        comment: document.getElementById('comment').value,
-        portfolioName: document.getElementById('portfolioList').value
-    };
-
-    fetch('/sell_partial_db', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(assetData)
-    })
-    .then(response => response.json())
-    .then(data => {
+    yahooFinanceSwitch.checked = false;
+    console.log('INSIDE SELL STOCK THE API');
+    
+    fieldCheck = allFieldsValid();
+    if (fieldCheck === true) {
+        console.log(fieldCheck);
+        const assetData = {
+            stock_code: document.getElementById('stockDropdown').value,
+            buy_price: document.getElementById('buyPrice').value,
+            no_of_shares: document.getElementById('noOfShares').value,
+            stop_loss: document.getElementById('stopLoss').value,
+            cash_out: document.getElementById('cashOut').value,
+            comment: document.getElementById('comment').value,
+            portfolioName: document.getElementById('portfolioList').value
+        };
         
-        if (data.message) {
-            console.log(data.message);  // Log success message
-            document.getElementById('refreshButton').click();
-            // alert(data.message)
-            let alert = document.getElementById('alert')
-            removeAlertClasses(alert)
-            document.getElementById('alertMessage').innerText = data.message
-            console.log(`Catagory : ${data.category}`)
-            alert.classList.add('alert-' + data.category);
-            alert.classList.remove("d-none")
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const url = this.dataset.url;  // Get URL from data attribute
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(assetData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            let alert = document.getElementById('alert');
+            removeAlertClasses(alert);
+            
+            if (data.message) {
+                // Success handling
+                console.log(data.message);  // Log success message
+                document.getElementById('refreshButton').click();
+                
+                document.getElementById('alertMessage').innerText = data.message;
+                alert.classList.add('alert-' + data.category);
+                alert.classList.remove("d-none");
+
+                setTimeout(function() {
+                    alert.classList.add("d-none");
+                }, 6000);
+            } else {
+                // Error handling
+                console.error(data.error);  // Log error message
+                document.getElementById('alertMessage').innerText = data.message;
+                alert.classList.add('alert-' + data.category);
+                alert.classList.remove("d-none");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);  // Log error from fetch
+            let alert = document.getElementById('alert');
+            removeAlertClasses(alert);
+            document.getElementById('alertMessage').innerText = "An unexpected error occurred. Please try again.";
+            alert.classList.add('alert-danger');
+            alert.classList.remove("d-none");
 
             setTimeout(function() {
                 alert.classList.add("d-none");
             }, 6000);
-
-        } else {
-            console.error(data.error);  // Log error message
-            let alert = document.getElementById('alert')
-            removeAlertClasses(alert)
-            document.getElementById('alertMessage').innerText = data.message
-            alert.classList.add('alert-' + data.category);
-            alert.classList.remove("d-none")  
-        }
-    })
-    .then()
-    .catch(error => console.error('Error:', error));
-}
+        });
+    }
 });
 
 
@@ -253,11 +282,15 @@ let isValid = true; // Flag to track if the form is valid
 let portfolioName = portfolioList.value
 // Get form fields
 const stockCode = document.getElementById('stockDropdown');
+const portfolioSelected = document.getElementById('portfolioList');
+const selectedPortfolio = portfolioSelected.options[portfolioSelected.selectedIndex];
+let releated_asset = selectedPortfolio.getAttribute('data-asset')
 const buyPrice = document.querySelector('input[name="buy_price"]');
 const noOfShares = document.querySelector('input[name="no_of_shares"]');
 const stopLoss = document.querySelector('input[name="stop_loss"]');
 const cashOut = document.querySelector('input[name="cash_out"]');
 const comment = document.querySelector('input[name="comment"]');
+console.log(releated_asset)
 // Clear previous error messages
 clearErrorMessages();
 
@@ -267,6 +300,9 @@ clearErrorMessages();
         case 'stock_code':
             if (input.value === '') {
                 showError(input, 'Please select a stock ticker.');
+                isValid = false;
+            } else if (input.value === releated_asset) {
+                showError(input, 'Cannot Purchase Selected Fund.');
                 isValid = false;
             }
             break;
@@ -320,6 +356,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function getLatestPrice() {
         tickerSelect =  document.getElementById('stockDropdown')
         let ticker = tickerSelect.value
+        const selectedOption = tickerSelect.options[tickerSelect.selectedIndex];
+        let assetID =  selectedOption.getAttribute('data-id')
+        let portfolioID =  selectedOption.getAttribute('data-portfolio')
+        let companyName =  selectedOption.getAttribute('data-company')
+        console.log(companyName)
         let url = tickerSelect.getAttribute('data-url');  // Get URL from data attribute
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; 
         console.log(ticker);
@@ -332,7 +373,7 @@ function getLatestPrice() {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfToken
             },
-            body: JSON.stringify({ 'ticker': ticker })  // Send ticker as JSON
+            body: JSON.stringify({ 'ticker': ticker , 'assetID': assetID , 'portfolioID':portfolioID })  // Send ticker as JSON
         })
         .then(response => {
             if (!response.ok) {
@@ -363,10 +404,6 @@ function getLatestPrice() {
    
 };
 
-
-
-
-
 ////////////////REMOVE STOCK API TO RETURN the HTML TEMPLATE
 
 
@@ -389,7 +426,6 @@ function removeButton () {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
-                    
                 }
             })
             .then(response => {
@@ -407,7 +443,7 @@ function removeButton () {
                     removeAlertClasses(alert)
                     document.getElementById('alertMessage').innerText = data.message
                     console.log(data)
-                    alert.classList.add('alert-' + data.catagory);
+                    alert.classList.add('alert-' + data.category);
                     alert.classList.remove("d-none")
                     setTimeout(function() {
                         alert.classList.add("d-none");
@@ -438,3 +474,33 @@ document.addEventListener('DOMContentLoaded', function() {
       alert.classList.add('d-none');  // Hide the alert instead of removing it
     });
   });
+
+
+
+
+
+
+//   document.getElementById('portfolioList').addEventListener('change', function() {
+//     const portfolioId = this.value; // Get the selected portfolio ID
+//     const url = this.getAttribute('data-url'); // API URL
+
+//     fetch(url)
+//         .then(response => response.json())
+//         .then(data => {
+//             const dropdown = document.getElementById('stockDropdown'); // Your asset dropdown element
+//             dropdown.innerHTML = ''; // Clear the existing options
+
+//             if (data.assets) {
+//                 // Populate the dropdown with the sorted assets
+//                 data.assets.forEach(asset => {
+//                     const option = document.createElement('option');
+//                     option.value = asset.id;
+//                     option.text = asset.ticker;
+//                     dropdown.appendChild(option);
+//                 });
+//             } else {
+//                 console.error("No assets found for the selected portfolio.");
+//             }
+//         })
+//         .catch(error => console.error('Error:', error));
+// });

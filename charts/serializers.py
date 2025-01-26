@@ -5,17 +5,24 @@ from users.models import Profile
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
+        # fields = '__all__'
+        fields = ['id', 'name']
+
+class PortfolioAssetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PortfolioAsset
         fields = '__all__'
 
 class PortfolioSerializer(serializers.ModelSerializer):
+    owner = ProfileSerializer(many = False)
+    # name = serializers.CharField(source='user.name', read_only=True)  # Access `username` from the related `User` model
+
+    # portfolio_assets = PortfolioAssetSerializer(many = True)
     class Meta:
         model = Portfolio
         fields = '__all__'
 
-class PortfolioAssetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = PortfolioAsset
-        fields = '__all__'
 
 
 

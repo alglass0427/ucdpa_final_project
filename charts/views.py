@@ -11,6 +11,8 @@ from django.db.models import Sum,Count
 from django.db.models.functions import TruncMonth,TruncDate
 from datetime import datetime, timedelta
 from rest_framework.renderers import BrowsableAPIRenderer,JSONRenderer
+from django.db.models import Case, When, BooleanField
+
 from rest_framework.decorators import api_view, renderer_classes
 
 def portfolio_data(request, portfolio_id):
@@ -112,7 +114,42 @@ from charts.serializers import (
     UserGrowthOverTimeSerializer,
     AveragePortfolioSizeSerializer,
     TopIndustriesSerializer,
+    PortfolioSerializer,
 )
+
+@api_view(['GET'])
+def get_portfolios(request):
+    
+    owner_id = request.GET.get('owner_id')  # Get the owner ID from the query parameters
+    if owner_id:
+        portfolios = Portfolio.objects.filter(owner_id=owner_id)  # Filter portfolios by owner
+        serializer = PortfolioSerializer(portfolios, many=True)  # Serialize the data
+        return Response(serializer.data)  # Return JSON response
+    portfolios = Portfolio.objects.all()
+    serializer = PortfolioSerializer(portfolios, many=True)
+    # return Response([serializer.data]) # Return all Portfolios no owner_id
+    return Response([])
+@api_view(['GET'])
+def get_sorted_assets(request, portfolio_id):
+    if request.method == "GET":
+        # Get the selected portfolio
+        try:
+            portfolio = Portfolio.objects.get(id=portfolio_id)
+        except Portfolio.DoesNotExist:
+            return JsonResponse({"error": "Portfolio not found."}, status=404)
+
+        assets = Asset.objects.filter(
+            portfolio_assets__portfolio=portfolio
+        ).annotate(
+            starts_with_fof=Case(
+                When(ticker__startswith="FOF-", then=True),
+                default=False,
+                output_field=BooleanField(),
+            )
+        ).order_by('-starts_with_fof', 'ticker')
+
+        asset_list = [{"id": asset.id, "ticker": asset.ticker} for asset in assets]
+        return JsonResponse({"assets": asset_list}, status=200)
 
 @api_view(['GET'])
 def total_users(request):

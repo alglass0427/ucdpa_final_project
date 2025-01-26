@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from users.models import Profile
+from django.db.models import Case, When, BooleanField
 # Create your models here.
 
 
@@ -10,38 +11,87 @@ class Portfolio(models.Model):
     portfolio_desc = models.TextField(null=True, blank=False) ##blank tells django wether to Allow blank on the formas for this filed
     created = models.DateTimeField(auto_now_add=True)
     total_cash_balance = models.FloatField(default=0)  # New field to track total cash balance
-
+    units = models.FloatField(default=1)
     
     class Meta:
         # ordering = ['created'] # "-" orders by descending
         ordering = ['portfolio_desc']
 
     def __str__(self):
-        return self.portfolio_desc
+        return f"Owner : {self.owner.name} - Portfolio : {self.portfolio_desc} - Cash : {self.total_cash_balance} "
+    
+    def total_holding_value(self):
+        """
+        Calculate the total holding value of all assets in the portfolio.
+        """
+        return self.portfolio_assets.aggregate(total_value=models.Sum('holding_value'))['total_value'] or 0
+    
     
     @classmethod
     def get_profiles_by_name(cls):
         return cls.objects.all().order_by('portfolio_desc')
+    
+    def check_portfolio_exists(portfolio_name):
+        portfolio_names = Portfolio.get_profiles_by_name().values_list('portfolio_desc', flat=True)
+        return portfolio_name in portfolio_names
 
+
+# class Cash(models.Model):
+#     portfolio = models.ForeignKey(
+#         Portfolio, 
+#         on_delete=models.CASCADE,
+#         related_name="cash_accounts"
+#     )
+#     user = models.ForeignKey(
+#         Profile,
+#         on_delete=models.CASCADE,
+#         related_name="cash_balances"
+#     )
+#     balance = models.FloatField(default=0)  # The cash balance for the user in this portfolio
+#     currency = models.CharField(max_length=10, default="USD")  # Support for multiple currencies
+#     units = models.FloatField(default=0)
+#     # balance = models.FloatField(default=0)
+#     updated_at = models.DateTimeField(auto_now=True)
+    
+#     def __str__(self):
+#         return f"{self.user.user.username} - {self.portfolio.portfolio_desc} - {self.balance} {self.currency}"
+
+
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class Cash(models.Model):
     portfolio = models.ForeignKey(
-        Portfolio, 
+        Portfolio,
         on_delete=models.CASCADE,
         related_name="cash_accounts"
     )
-    user = models.ForeignKey(
-        Profile,
+    # Add these fields for generic ownership
+    owner_content_type = models.ForeignKey(
+        ContentType,
         on_delete=models.CASCADE,
-        related_name="cash_balances"
+        limit_choices_to={'model__in': ['profile', 'portfolio']},  # Limit to specific models
+        null=True,
+        blank=True
     )
-    balance = models.FloatField(default=0)  # The cash balance for the user in this portfolio
+    owner_object_id = models.UUIDField(
+        null=True,
+        blank=True,
+    ) 
+    owner = GenericForeignKey('owner_content_type', 'owner_object_id')
+
+    balance = models.FloatField(default=0)  # The cash balance
     currency = models.CharField(max_length=10, default="USD")  # Support for multiple currencies
-    balance = models.FloatField(default=0)
+    units = models.FloatField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
-        return f"{self.user.user.username} - {self.portfolio.portfolio_desc} - {self.balance} {self.currency}"
+        owner_type = "User" if self.owner_content_type.model == "profile" else "Portfolio"
+        owner = self.owner.username if self.owner_content_type.model == "profile" else self.owner.portfolio_desc
+        return f"Owner Type: {owner_type} - Owner: {owner} - Value : {self.balance} - Portfolio: {self.portfolio.portfolio_desc}"
+
+
+
 
 
 class PortfolioAsset(models.Model):
@@ -84,7 +134,10 @@ class Asset(models.Model):
     ticker = models.CharField(max_length=10, unique=True)
     company_name = models.CharField(max_length=255)
     industry = models.CharField(max_length=255, null=True, blank=True)
-
+    is_portfolio = models.BooleanField(default=False)
+    portfolio = models.OneToOneField(
+        'Portfolio', null=True, blank=True, on_delete=models.CASCADE
+    )
     def to_json(self):
         return {
             'id': self.id,
@@ -98,9 +151,15 @@ class Asset(models.Model):
         """
         Retrieve all assets sorted by ticker in ascending order.
         """
-        return cls.objects.all().order_by('ticker')
+        assets = Asset.objects.annotate(
+        starts_with_fof=Case(
+            When(ticker__startswith="FOF-", then=True),
+            default=False,
+            output_field=BooleanField(),
+                )
+            ).order_by('-starts_with_fof', 'ticker')
 
-
+        return assets
 
 
     def __str__(self):

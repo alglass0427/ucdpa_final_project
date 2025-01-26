@@ -3,19 +3,19 @@
 {% block title %}Dashboard - Portfolio Manager{% endblock %}
 {% block content %}
 <h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
-    <span class = "d-none d-sm-block" >Portfolio Dashboard</span>
+    <span class = "d-none d-sm-block" >Manager Dashboard</span>
     <span class = "d-block d-sm-none" >Dashboard</span>
 </h1>
 <div class="container-sm container_add mt-2">
+        
+
         <div class="row g-3 align-items-center">
 
             <div class="col-md-9 col-xs-12 d-flex d-md-block justify-content-center align-items-center">
-                <span class =  "d-none d-sm-block" >Welcome, {{ profile.username }}</span>
-                <span class = "d-block d-sm-none">{{ profile.username }}</span>
+                <span class =  "d-none d-sm-block" >Welcome, {{ profile.name }} , ({{ profile.group }})</span>
+                <span class = "d-block d-sm-none">{{ profile.name }} ({{ profile.group }})</span>
             </div>
-            
-
- 
+             
             <div class="col-md-3 col-xs-12 d-flex  justify-content-center align-items-center">
                 <div class="form-check form-switch">
                     <label class="form-check-label ml-5" for="yahooFinance">
@@ -26,14 +26,52 @@
             </div>
 
         </div>
-        
+        {% comment %}
         <div class="row g-3 align-items-center mt-2">
+
+            <div class="col-md-6">
+                <select title="" id="" class="form-control" name="" aria-placeholder="Select ">
+                    <option disabled selected value="">Select Manager</option>
+                    <option value="All">All</option>
+                    {% for user in managers_users %}
+                        <option value="{{ user.id }}">{{ user.name }}</option>
+
+                        
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select title="portfolioManagers" id="managers" class="form-control" name="portfolioManagers" aria-placeholder="Select Manager">
+                    <option disabled selected value=""></option>
+                    <option value="All">All</option>
+                    {% for user in managers_users %}
+                        <!-- <option value="{{ user.id }}">{{ user.name }}</option> -->
+                    {% endfor %}
+                </select>
+            </div>
+            
+            
+        </div>
+        {% endcomment %}
+        <div class="row g-3 align-items-center mt-2">
+
+
 
             <div class="col-md-10">
                 <!-- <input type="text" class="form-control" name="stock_code" placeholder="Stock Code" required> -->
-                <select title="portfolio" id="portfolioList" class="form-control" name="portfolio_id" data-live-search="true">
+                <select title="portfolio" id="portfolioList" class="form-control" name="portfolio_id" 
+                data-live-search="true"
+                >
                     {% for portfolio in portfolios  %}
-                        <option> {{portfolio.portfolio_desc}} </option> 
+                        <!-- <option> {{portfolio.portfolio_desc}} </option> -->
+                        <option 
+                                value="{{ portfolio.portfolio_desc }}" 
+                                data-id="{{ portfolio.id }}"
+                                data-asset="{{ portfolio.asset }}" 
+                                data-owner="{{ portfolio.owner }}">
+                                {{portfolio.portfolio_desc}}
+                                
+                        </option>
                     {% endfor %}
                 </select>                
             </div>
@@ -52,10 +90,13 @@
 
 </div>
 
+    
     <div class="container container_add mt-2">
     
         <form  id = "addStockForm">
-
+            <fieldset 
+            {% comment %}  {% if not is_manager %} disabled {% endif %} {% endcomment %}
+            >
             <div class="row g-3 align-items-center mb-3">
                 <div class="col-lg-6 col-md-12">
                     <!-- <input type="text" class="form-control" name="stock_code" placeholder="Stock Code" required> -->
@@ -68,7 +109,15 @@
                         
                         <option value="" disabled selected>Ticker</option><!-- Default option -->
                         {% for asset in assets %}
-                            <option value="{{ asset.ticker }}">{{ asset.ticker }} - {{ asset.company_name }}</option>
+                            <option 
+                                value="{{ asset.ticker }}" 
+                                data-id="{{ asset.id }}" 
+                                data-company="{{ asset.company_name }}"
+                                data-portfolio="{{ asset.portfolio.id }}"
+                                >
+                                    {{ asset.ticker }} - {{ asset.company_name }}
+                                
+                            </option>
                         {% endfor %}
                        
                     </select>                
@@ -101,28 +150,36 @@
             
             <div class="row g-3 align-items-center">
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="addStockButton" class="btn btn-dark w-100 " data-url="{% url 'add_stock_db' %}">Buy</button>
+                    <button type="button" id="addStockButton" class="btn btn-dark w-100 " data-url="{% url 'add_stock_db' %}">
+                        Buy
+                    </button>
                 </div>
 
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="sellStockButton" class="btn btn-secondary w-100">Sell</button>
+                    <button type="button" id="sellStockButton" class="btn btn-secondary w-100"  data-url="{% url 'sell_partial_db' %}">
+                        Sell
+                    </button>
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="refreshStockButton" class="btn btn-info w-100">Refresh Price</button>
+                    <button type="button" id="refreshStockButton" class="btn btn-info w-100">
+                        Refresh Price
+                    </button>
                 </div>
             </div>
-            
+        </fieldset>
         </form>
         
     </div>
+    
     <!-- Alert For JSON Response  -->
+    <div class="row">
     <div class="alert fade show d-none" role="alert" id = "alert">
         <span id = "alertMessage"></span>
         <button type="button" class="close"  aria-label="Close" id="alertCloseButton">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-
+    </div>
     <div id = "tableSection">
             
 
@@ -142,7 +199,7 @@
 {% block scripts %}
 {% comment %} {% endcomment %}
 <script src="{% static 'js/dashboard.js' %}"></script>
-<script src="{% static 'js/scripts.js' %}"></script>  
+<!-- <script src="{% static 'js/scripts.js' %}"></script>   -->
 <!-- Search on Dropdown -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
 
