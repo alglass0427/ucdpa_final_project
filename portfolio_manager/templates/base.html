@@ -29,7 +29,7 @@
     <div class="wrapper">
         
         <nav class="navbar navbar-expand-lg bg-primary mb-5" data-bs-theme="dark">
-            <div class="container">
+            <div class="container ps-4 pe-4">
             <a class="navbar-brand" href="">
                 <span class = "responsive-text">Portfolio</span>
                 <span class = "responsive-text"> Manager</span>
@@ -46,8 +46,21 @@
                         <a class="nav-link" href="{% url 'profiles' %}">Users</a>
                     </li>
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inbox' %}">Inbox</a>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="{% url 'inbox' %}">
+                                <span class = " pt-2 position-relative">Inbox
+                                {% if inbox_count > 0 %}
+                                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                                {{ inbox_count }}
+                                    </span>
+                                {% endif %}
+                                </span>
+                            </a>
+                            <!-- {% if inbox_count > 0 %}
+                            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+                            {{ inbox_count }}
+                            </span>
+                            {% endif %} -->
                         </li>
 
                         <li class="nav-item">
