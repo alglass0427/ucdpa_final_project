@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 <!-- {% load static %} -->
 {% block content %}
-    
+<div id="loading-spinner" class="spinner-overlay" style="display: none;">
+  <div class="spinner"></div>
+</div>
   <!-- Main Section -->
   <main class="container my-5" style="max-width: 800px;">
     <div class="card shadow-sm">
@@ -22,6 +24,11 @@
                 
               </div>
             </a>
+            <a href="{% url 'del_message' message.id %}" class="text-decoration-none text-end w-100">
+              <button type="button" class="btn btn-danger btn-sm">
+                Delete
+              </button>
+              </a>
           </li>
           {% endfor %}
         </ul>
@@ -29,3 +36,10 @@
     </div>
   </main>
   {% endblock content %}
+
+
+  {% block scripts %}
+
+  
+  
+    {% endblock %}

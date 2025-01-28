@@ -377,15 +377,16 @@ def handle_cash_update_or_create(asset, buy_price, no_of_shares, new_units, mana
 
 
 
-def handle_cash_update_or_create_investor(portfolio, buy_price, no_of_shares, new_units,profile,buy_or_sell):
+def handle_cash_update_or_create_investor(portfolio, buy_price, new_units,owner,buy_or_sell,user):
     # Use transaction.atomic to ensure all changes are committed atomically
     print(new_units," :  NEW UNITS IN HANDLE")
     with transaction.atomic():
+        portfolio_obj = Portfolio.objects.get(id=portfolio)
         # Attempt to update or create the Cash entry
         cash, created = Cash.objects.update_or_create(
-            portfolio=portfolio,
+            portfolio=portfolio_obj,
             owner_content_type=ContentType.objects.get_for_model(Profile),
-            owner_object_id=profile,
+            owner_object_id=user,
             defaults={
                 "currency": "USD",  # Default value for currency, not balance or units
             }
@@ -395,24 +396,27 @@ def handle_cash_update_or_create_investor(portfolio, buy_price, no_of_shares, ne
         if created:
             previous_balance = 0
             previous_units = 0
-            cash.balance = float(buy_price) * float(no_of_shares)
+            cash.balance = float(buy_price) ##* float(no_of_shares)
             cash.units = new_units
             cash.save()
-            print(f"Created new Cash entry for portfolio {portfolio} with balance {cash.balance} and Owner {profile}.")
+            print(f"Created new Cash entry for portfolio {portfolio} with balance {cash.balance} and Owner {user}.")
             
         else:
             # Retrieve previous values before saving the updated instance
             previous_balance = cash.balance
             previous_units = cash.units
+            cash.balance += float(buy_price) ##* float(no_of_shares)
+            cash.units += new_units
+            cash.save()
 
             # Increment balance and units for the existing instance
-            if buy_or_sell == 'BUY':
-                cash.balance += float(buy_price) * float(no_of_shares)
-                cash.units += new_units
-            else:
-                cash.balance -= float(buy_price) * float(no_of_shares)
-                cash.units += new_units
-            cash.save()
+            # if buy_or_sell == 'Subscription':
+            #     cash.balance += float(buy_price) ##* float(no_of_shares)
+            #     cash.units += new_units
+            # else:
+            #     cash.balance -= float(buy_price) ##* float(no_of_shares)
+            #     cash.units += new_units
+            # cash.save()
 
             # Calculate the difference in balance and units
             balance_diff = cash.balance - previous_balance
@@ -429,9 +433,8 @@ def handle_cash_update_or_create_investor(portfolio, buy_price, no_of_shares, ne
             units=F('units') + units_diff
         )
 
-        # Portfolio.objects.filter(id=managed_portfolio.id).update(
-        #     total_cash_balance=F('total_cash_balance') - balance_diff,
-        #     units=F('units') + units_diff
-        # )
+        Profile.objects.filter(id=user).update(
+            balance=F('balance') - balance_diff,
+        )
 
     return cash

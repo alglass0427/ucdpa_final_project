@@ -72,7 +72,7 @@ def registerUser(request):
             messages.success(request, "User Account Created!")
 
             login(request, user)
-            return redirect('edit-account')                 
+            return redirect('edit-account', page='edit')                 
         
         else:
             messages.error(request , "An Error has occured")
@@ -163,3 +163,14 @@ def createMessage (request,pk):
 
 
 
+@login_required(login_url='login')
+def deleteMessage (request,pk):
+    profile = request.user.profile
+    message = profile.messages.get(id=pk)
+    message.delete()
+    messageRequests = profile.messages.all()  ## "messages" in this case is The related name from the Model -   no need for _set
+    unreadCount = messageRequests.filter(is_read=False).count()
+    context = {'messageRequests':messageRequests,'unreadCount':unreadCount}
+    return redirect('inbox')
+    # return render(request, 'users/inbox.html', context)
+    

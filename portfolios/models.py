@@ -87,8 +87,16 @@ class Cash(models.Model):
 
     def __str__(self):
         owner_type = "User" if self.owner_content_type.model == "profile" else "Portfolio"
-        owner = self.owner.username if self.owner_content_type.model == "profile" else self.owner.portfolio_desc
-        return f"Owner Type: {owner_type} - Owner: {owner} - Value : {self.balance} - Portfolio: {self.portfolio.portfolio_desc}"
+        print("OWNER",self.owner_object_id)
+        
+        portfolio = Portfolio.objects.filter(id=self.owner_object_id).first()
+        owner = (
+            self.owner.name 
+            if self.owner_content_type.model == "profile" 
+            else portfolio.portfolio_desc if portfolio else "Unknown Portfolio"
+            )           
+        return f"Owner Type: {owner_type} - Owner: {owner} - Value : {self.balance} - Portfolio Bought: {self.portfolio.portfolio_desc} -  Units: {self.units}"
+
 
 
 

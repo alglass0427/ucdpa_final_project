@@ -22,8 +22,45 @@ from django.shortcuts import get_object_or_404
 def investor (request):
     # page = kwargs.get('page',None)
     # profile = request.user.profile
+    
+
     if request.method == "POST":
+        
+        comment = request.POST.get('comment', None)
+        portfolio_id = request.POST.get('portfolio', None)
+        print("PORTFOLIO",portfolio_id)
+        owner = request.POST.get('owner', None)
+        if owner == 'Select Manager':
+            messages.error(request,"Manager must be selected!!")
+            return redirect('investor')
+        
+        
+        if portfolio_id == 'Select Portfolio' or portfolio_id == '' or  portfolio_id == None:
+            messages.error(request,"Portfolio must be selected!!")
+            return redirect('investor')
+        
+        print("OWNER", owner)
+        user = request.user.profile.id
+        print(portfolio_id)
+        print(owner,user)
+        asset  =  Asset.objects.filter(portfolio=portfolio_id)
+        portfolio_content_type = ContentType.objects.get_for_model(Profile)
+        portfolio = Portfolio.objects.get(id=portfolio_id)
+        # Query the Cash model
+        cash = Cash.objects.filter(
+            portfolio=portfolio,  # Match the specific portfolio
+            owner_content_type=portfolio_content_type,  # Match the owner type
+            owner_object_id=request.user.profile.id  # Match the owner object ID
+            ).first()
+        # print("USER CASH INVESTED:::", cash.balance)
         action = request.POST.get('action')
+        if not cash and action == "Redemption" :
+            messages.error(request,"No Cash Invested in this Fund")
+            return redirect('investor')
+
+        
+
+        
         print(action)
         if action == "Subscription":
             print("Subscription")
@@ -34,13 +71,16 @@ def investor (request):
             invest_amount = request.POST.get('invest_amount', None)
             invest_amount = float(invest_amount)*(-1)
             print(invest_amount)
+        else:
+            messages.error(request,"Invalid Request")
+            return JsonResponse({"error": "Invalid Request."}, status=400)
 
-        print(request)
+        if cash and action == "Redemption" :
+            if int(cash.balance) < float(request.POST.get('invest_amount', None)):
+                messages.error(request,f"Max Redemption is {cash.balance}")
+                print("CANNOT REDEEM")
+                return redirect('investor')
         
-        comment = request.POST.get('comment', None)
-        portfolio_id = request.POST.get('portfolio', None)
-        owner = request.POST.get('owner', None)
-        asset  =  Asset.objects.filter(portfolio=portfolio_id)
         print(asset)
         print("owner",owner)
         print("invest_amount",invest_amount)
@@ -55,26 +95,24 @@ def investor (request):
         except:
             sender = None
         
-        
+        portfolio = Portfolio.objects.get(id=portfolio_id)
+        current_net_assets = (portfolio.total_holding_value() + portfolio.total_cash_balance)
+        current_units = portfolio.units
+        current_NAV = (current_net_assets/current_units)
+        new_net_assets  = current_net_assets + float(invest_amount)
+        new_total_units = new_net_assets / current_NAV
+        new_units = new_total_units - current_units        
+        portfolio_name = portfolio.portfolio_desc
         Message.objects.create(
             sender=sender,
             recipient=recipient,
             name = request.user.profile.name,
             email= request.user.email,
-            subject= "investment",
-            body="I add funds"
+            subject= f"{invest_amount} {action} - {portfolio_name}",
+            body=comment
         )
-        # if form.is_valid():
-        #     message = form.save(commit=False)
-        #     message.sender = sender
-        #     message.recipient = recipient
-
-        #     if sender:
-        #         message.name = sender.name
-        #         message.email = sender.email
-        # message.save()
-
-        messages.success(request,"Your message was sent successfully!")
+    
+        messages.success(request,"Investment successful, message sent to Fund Manager!")
 
         if not portfolio_id :
             return JsonResponse({"error": "Portfolio ID is required."}, status=400)
@@ -82,22 +120,14 @@ def investor (request):
             return JsonResponse({"error": "Owner is required."}, status=400)
         if not portfolio_id :
             return JsonResponse({"error": "Portfolio ID is required."}, status=400)
-        
-        handle_cash_update_or_create_investor(portfolio_id, invest_amount, 1, 1,owner,"BUY")
+        ## handle_cash_update_or_create_investor(portfolio, buy_price, no_of_shares, new_units,profile,buy_or_sell):
+        handle_cash_update_or_create_investor(portfolio_id, invest_amount, new_units,owner,action,user)
 
-        
+        return redirect('investor')
     # owners = Portfolio.objects.values_list('owner__name','owner__id').distinct().order_by() 
     owners= Profile.objects.filter(group__name="Manager" ) 
     #####.order_by() with no arguments clears any default ordering applied by Django.
-    print("OWNERS:::",owners)
-
-
-
-
-
-
-
-    
+    print("OWNERS:::",owners)   
     
     context = {'owners':owners}
     return render(request, 'portfolios/investor.html', context)

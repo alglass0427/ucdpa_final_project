@@ -13,6 +13,7 @@ urlpatterns = [
     # path('get_bid_offer/', views.get_bid_offer, name= "get_bid_offer"),
     path('inbox/', views.inbox, name= "inbox"),
     path('message/<str:pk>/', views.viewMessage, name= "message"),
+    path('delete_message/<str:pk>/', views.deleteMessage, name= "del_message"),
     path('create-message/<str:pk>/', views.createMessage, name= "create-message"),
     path('profiles/',views.profiles,name="profiles"),
 ]
