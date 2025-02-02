@@ -24,11 +24,11 @@
                 
               </div>
             </a>
-            <a href="{% url 'del_message' message.id %}" class="text-decoration-none text-end w-100">
-              <button type="button" class="btn btn-danger btn-sm">
+            <a href="{% url 'del_message' message.id %}" class="spin-link text-decoration-none text-end w-100">
+              <button type="button" class="btn btn-danger btn-sm spin-button">
                 Delete
               </button>
-              </a>
+            </a>
           </li>
           {% endfor %}
         </ul>
@@ -39,7 +39,5 @@
 
 
   {% block scripts %}
-
-  
-  
+  <script src="{% static 'js/spinner.js' %}"></script>
     {% endblock %}

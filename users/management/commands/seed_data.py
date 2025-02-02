@@ -9,7 +9,25 @@ from django.contrib.contenttypes.models import ContentType
 class Command(BaseCommand):
     help = "Seed data for User, Profile, Portfolio, and Assets."
 
+    
     def handle(self, *args, **kwargs):
+
+        first_names = [
+    "Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah", "Ian", "Julia",
+    "Kevin", "Lena", "Michael", "Nora", "Oliver", "Paula", "Quinn", "Ryan", "Sophia", "Travis",
+    "Uma", "Victor", "Wendy", "Xander", "Yasmin", "Zane", "Aaron", "Beatrice", "Caleb", "Delilah",
+    "Edward", "Francesca", "Gabriel", "Hazel", "Isaac", "Jasmine", "Kyle", "Laura", "Matthew", "Natalie",
+    "Oscar", "Penelope", "Quentin", "Riley", "Samuel", "Tina", "Ulysses", "Vanessa", "William", "Zoey"
+]
+        last_names = [
+    "Smith", "Johnson", "Brown", "Williams", "Jones", "Miller", "Davis", "Garcia", "Wilson", "Martinez",
+    "Anderson", "Taylor", "Thomas", "Hernandez", "Moore", "Martin", "Jackson", "Thompson", "White", "Lopez",
+    "Lee", "Gonzalez", "Harris", "Clark", "Lewis", "Walker", "Hall", "Allen", "Young", "King",
+    "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker",
+    "Carter", "Mitchell", "Perez", "Roberts", "Phillips", "Campbell", "Evans", "Edwards", "Collins", "Stewart"
+]
+
+
         # Fetch all existing assets
         all_assets = list(Asset.objects.all())
         if not all_assets:
@@ -21,13 +39,17 @@ class Command(BaseCommand):
         next_user_id = last_user.id + 1 if last_user else 1
 
         # Seed 50 users with profiles
-        for i in range(10):
+        for i in range(25):
+
+            first_name = random.choice(first_names)
+            last_name = random.choice(last_names)
             # Create a user
             user = User.objects.create_user(
                 username=f"user{next_user_id + i}",
                 password="password123",
                 email=f"user{next_user_id + i}@example.com",
-                first_name = f"user{next_user_id + i}",
+                first_name=first_name,
+                last_name=last_name,
                 
             )
 

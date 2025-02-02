@@ -1,9 +1,34 @@
+function showError(inputElement, message) {
+    const errorElement = document.createElement('div');
+    errorElement.className = 'error-message';
+    errorElement.style.color = 'red';
+    errorElement.innerText = message;
+    inputElement.parentElement.appendChild(errorElement);
+}
+
+// Function to clear previous error messages
+function clearErrorMessages() {
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(function(message) {
+        message.remove();
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const refreshButton = document.getElementById('refreshButton');
 
     refreshButton.addEventListener('click', function () {
+        clearErrorMessages()
         const url = this.dataset.url;  // Get the URL from the data attribute
         const portfolio = document.getElementById('portfolioList').value;
+        const portfolioSelect = document.getElementById('portfolioList');
+        console.log(`PORTFOLIO NAME: ${portfolio}`)
+        if (portfolio == 'Select Portfolio'){
+            showError(portfolioSelect, 'Please select ');
+                isValid = false;
+                return isValid;
+        } 
+        
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; // Get CSRF token
 
         console.log(`Portfolio Value: ${portfolio}`);

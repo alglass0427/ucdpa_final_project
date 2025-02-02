@@ -10,7 +10,7 @@ from .forms import CustomUserCreationForm , ProfileForm ,  MessageForm
 from .models import Profile
 from portfolios.models import Asset
 from portfolios.utils import get_latest_price
-from .utils import searchProfiles,paginateProfiles
+from users.utils import searchProfiles,paginateProfiles
 import json
 # Create your views here.
 
@@ -47,9 +47,13 @@ def loginPage(request):
         
         user = authenticate(request,username = username , password = password)
 
+        
         if user is not None:
             login(request,user)
-            return redirect(request.GET['next'] if 'next' in request.GET else 'dashboard')
+            if user.profile.group.name == 'Manager':
+                return redirect(request.GET['next'] if 'next' in request.GET else 'dashboard')
+            else:
+                return redirect(request.GET['next'] if 'next' in request.GET else 'investor')
         else:
             messages.error(request,"Username or Password is Incorrect")
 
@@ -72,7 +76,7 @@ def registerUser(request):
             messages.success(request, "User Account Created!")
 
             login(request, user)
-            return redirect('edit-account', page='edit')                 
+            return redirect('edit-account')                 
         
         else:
             messages.error(request , "An Error has occured")
@@ -91,19 +95,24 @@ def logoutUser(request):
 
 
 @login_required(login_url='login')
-def editAccount (request,page=None):
+def editAccount (request):
+    
     # page = kwargs.get('page',None)
     profile = request.user.profile
     print(profile)
     form  = ProfileForm(instance=profile)
 
     if request.method  == 'POST':
+
         form = ProfileForm(request.POST,request.FILES, instance= profile)
         if form.is_valid():
             form.save()
-
-            return redirect ('dashboard')
-    
+            if request.user.profile.group.name == 'Manager':
+                return redirect(request.GET['next'] if 'next' in request.GET else 'dashboard')
+            else:
+                return redirect(request.GET['next'] if 'next' in request.GET else 'investor')
+            # return redirect ('dashboard')
+    page = 'edit'
     # form = ProfileForm()
     context = {'form':form,'page':page}
     return render(request, 'users/profile_form.html', context)

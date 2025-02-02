@@ -9,9 +9,12 @@ from .models import Profile
 from portfolios.models import Asset ,AssetHistory , PortfolioAsset  ,Portfolio
 import os
 import io
-from django.db.models import Max
 import yfinance as yf
 from datetime import datetime, timedelta, date
+from django.db import transaction
+from django.db.models import F,Max
+from django.contrib.contenttypes.models import ContentType
+from .models import Cash
 
 import matplotlib.pyplot as plt
 import matplotlib
@@ -22,11 +25,9 @@ import pandas as pd
 CURRENT_DIR =  os.getcwd()
 
 
-
-# from sqlalchemy import func
-def is_manager(user):
-    profile = user.profile
-    return profile.group.name == 'Manager' if profile.group else False
+# def is_manager(user):
+#     profile = user.profile
+#     return profile.group.name == 'Manager' if profile.group else False
 
 ###################################################################################
 ####GET SINGLE LATEST PRICE
@@ -59,10 +60,7 @@ def get_latest_price (ticker,asset,portfolio):
 
 def get_latest_portfolio_prices(portfolio):
     print(portfolio)
-    # Query your database for the tickers in the portfolio (assuming a PortfolioAsset model)
-    # portfolio_assets = db.session.query(PortfolioAsset, Asset).\
-    #     join(Asset, PortfolioAsset.asset_id == Asset.id).\
-    #     filter(PortfolioAsset.portfolio_id == portfolio).all()
+    
     portfolio_assets = PortfolioAsset.objects.filter(portfolio_id=portfolio).select_related('asset')
 
     print(portfolio_assets)
@@ -178,7 +176,7 @@ def get_stock_price(stock_code,asset_id,portfolio,yf_flag,user_id,buy_price):
         ######END IF yf_flag is Y - - -  add Condition to based on MAX Date 
 
         # Input buy price (manually specified)
-        # buy_price = buy_price  # Example: You bought the stock at $150
+        # buy_price = buy_price  # Example: bought the stock at $150
     print(f"THIS IS THE BUY PRICE IN STOCK FUNCTION  ::::::  {buy_price}")
     
     today = datetime.today()
@@ -301,19 +299,6 @@ def get_stock_price(stock_code,asset_id,portfolio,yf_flag,user_id,buy_price):
         return (("Invalid Ticker","",""))
     
 
-
-
-
-
-
-
-
-
-
-from django.db import transaction
-from django.db.models import F
-from django.contrib.contenttypes.models import ContentType
-from .models import Cash
 
 def handle_cash_update_or_create(asset, buy_price, no_of_shares, new_units, managed_portfolio,buy_or_sell):
     # Use transaction.atomic to ensure all changes are committed atomically

@@ -39,6 +39,8 @@
 <div class="container-sm container_add mt-2">
     
     <form action="{% url 'add_portfolio' %}" method="POST" id="addPortfolio">
+        <fieldset  {% if request.user.profile.group.name != 'Manager' %} disabled {% endif %} >
+            {% comment %} {% endcomment %}
         {% csrf_token %}
         <div class="row g-3 align-items-center">
             <div class="col-lg-5 col-md-12">
@@ -54,9 +56,10 @@
             </div>
 
             <div class="col-lg-3 col-md-12">
-                <button type="submit" class="btn btn-primary w-100">Create Portfolio</button>
+                <button type="submit" class="btn rounded-pill btn-primary w-100">Create Portfolio</button>
             </div>
         </div>
+    </fieldset>
     </form>
 </div>
     <!-- Alert For JSON Response  -->
@@ -104,7 +107,7 @@
                 </div>
     
                 <div class="col-lg-3 col-md-12">
-                    <div id="refreshButton" data-url="{% url 'get_all_portfolios' %}" class="btn btn-primary w-100">
+                    <div id="refreshButton" data-url="{% url 'get_all_portfolios' %}" class="btn rounded-pill btn-primary w-100">
                         Refresh
                     </div>
                 </div>
@@ -112,7 +115,8 @@
         </div>
         </form>
         </div>
-      <div id = "tableSection"> 
+
+<div id = "tableSection"> 
 
 <div class="table-responsive" id="portfolioDisplay">
 

@@ -28,10 +28,13 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+####RESET PASSWORD -  USES SETTINGS .py for EMAIL SETTINGS
+urlpatterns += [
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="reset_password.html"),name ='reset_password'),  ##,name ='reset_password'   <<---DEFAULT
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="reset_password_sent.html"),name ='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="reset.html"),name ='password_reset_confirm'), ## encode user id in base 64 
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="reset_password_complete.html"),name ='password_reset_complete') 
 
-# from django.views.generic import TemplateView
-
-# urlpatterns += [
-#     # Other URLs
-#     path('', TemplateView.as_view(template_name='index.html')),
-# ]
+]

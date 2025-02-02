@@ -12,11 +12,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required , user_passes_test
-from django.db.models import Sum, Count, F, Q , Subquery, OuterRef ,Case, When, Value
-from .utils import get_latest_portfolio_prices, get_stock_price , get_latest_price , is_manager, handle_cash_update_or_create , handle_cash_update_or_create_investor
+from django.db.models import Sum, Count, F, Q , Subquery, OuterRef ,Case, When, Value,FloatField
+from .utils import get_latest_portfolio_prices, get_stock_price , get_latest_price , handle_cash_update_or_create , handle_cash_update_or_create_investor
 from django.shortcuts import get_object_or_404
+from django.db.models.functions import Coalesce,Cast
 # from django.db import transaction, IntegrityError
 
+
+def is_manager(user):
+    return user.is_authenticated and str(user.profile.group) == "Manager"
 
 @login_required(login_url='login')
 def investor (request):
@@ -73,7 +77,7 @@ def investor (request):
             print(invest_amount)
         else:
             messages.error(request,"Invalid Request")
-            return JsonResponse({"error": "Invalid Request."}, status=400)
+            return redirect('investor')
 
         if cash and action == "Redemption" :
             if int(cash.balance) < float(request.POST.get('invest_amount', None)):
@@ -133,33 +137,28 @@ def investor (request):
     return render(request, 'portfolios/investor.html', context)
 
 
-
+def access_denied(request):
+    messages.error(request, "Access denied. - Redirected To Investor from Manager UI.")
+    return redirect('investor')
 
 @login_required(login_url='login')
+@user_passes_test(is_manager, login_url='access-denied')
 def dashboard(request):
     print(f"REQUEST.USER: {request.user}")
     print(request.user.groups)
     print(f"User Groups: {request.user.groups.all()}")
-    managers_group = Group.objects.get(name='Manager')
+    # managers_group = Group.objects.get(name='Manager')
     
     # Get all users who belong to the "Managers" group
-    managers_users = Profile.objects.filter(group=managers_group)
+    # managers_users = Profile.objects.filter(group=managers_group)
     profile = request.user.profile
-    is_manager = profile.group.name == 'Manager' if profile.group else False
     portfolios = profile.portfolio_set.all()
     if portfolios.count() == 0:
         messages.info(request, "You must create a portfolio before proceeding.")
         return redirect('portfolios')  # Redirect to the page for managing portfolios
-    # for portfolio in portfolios:
-    #     related_asset = portfolio.asset  # Access the related Asset instance
-    #     print("RELATED ASSET::::::", related_asset)
-    if is_manager:
-        assets = Asset.get_assets_by_ticker()
-    else:
-        assets = Asset.objects.filter(is_portfolio=True)
-    print('Manager = ',is_manager)
-    # print(assets)
-    context = {'profile' : profile , 'portfolios': portfolios, 'assets' : assets , 'is_manager':is_manager , 'managers_users': managers_users }
+    assets = Asset.get_assets_by_ticker()
+    context = {'profile' : profile , 'portfolios': portfolios, 'assets' : assets , 'is_manager':is_manager , #'managers_users': managers_users 
+               }
     return render(request, 'portfolios/dashboard.html', context)
 
 # @csrf_exempt
@@ -194,7 +193,7 @@ def get_bid_offer(request):
 
 
 # @csrf_exempt
-@login_required
+@login_required(login_url="login")
 def add_stock_db(request):
     user = request.user
     print("USER GROUP::::", user.profile.group)
@@ -302,16 +301,11 @@ def add_stock_db(request):
     asset = Asset.objects.filter(ticker=stock_code).first()
 
     if not asset:
-        # asset = Asset(ticker=stock_code)
-        # db.session.add(asset)
-        # db.session.commit()
+        
         return JsonResponse({"message": "No Asset with this Ticker - Contact Admin!","category": "danger"},status=201)
 
 #######Reduce Cash###############
 
-    # Retrieve the user and portfolio
-    # Insert the stock details into the portfolio_assets table
-    # Get the asset and portfolio IDs from your existing logic
 
     if managed_portfolio and asset:
 
@@ -332,29 +326,16 @@ def add_stock_db(request):
             
             test = handle_cash_update_or_create(asset, buy_price, no_of_shares, new_units, managed_portfolio,"BUY")
 
-            # with transaction.atomic():
-            #     cash, created = Cash.objects.update_or_create(
-            #             portfolio=asset.portfolio,
-            #             owner_content_type=ContentType.objects.get_for_model(Portfolio),
-            #             owner_object_id=managed_portfolio.id,
-            #             defaults={
-            #             "currency":"USD"}
-            #             )
-                
-            #     print("CASH::::",cash)
 
-            #     if created:
-            #         # Initialize values for a new instance
-            #         cash.balance = float(buy_price) * float(no_of_shares)
-            #         cash.units = new_units
-            #         cash.save()
-            #         print(f"Created new Cash entry for portfolio {portfolio_id} with balance {float(buy_price) * float(no_of_shares)} and Owner {managed_portfolio}.")
-            #     else:
-            #         # Increment values for an existing instance
-            #         cash.balance += float(buy_price) * float(no_of_shares)
-            #         cash.units += new_units
-            #         cash.save()
-            #         print(f"UPDATED Cash entry for portfolio {portfolio_id} with balance {float(buy_price) * float(no_of_shares)} and Owner {managed_portfolio}.")
+            Message.objects.create(
+            sender=request.user.profile,
+            recipient=asset.portfolio.owner,
+            name = request.user.profile.name,
+            email= request.user.email,
+            subject= f"{total_amount} SUB- {portfolio_name}",
+            body=comment
+        )
+           
     # Fetch the holding
         holding = PortfolioAsset.objects.filter(portfolio=managed_portfolio, asset=asset).first()
         print(f"Holding Price : {holding}")
@@ -427,7 +408,7 @@ def add_stock_db(request):
     
 
 @csrf_exempt
-@login_required
+@login_required(login_url="login")
 def get_portfolio_assets(request):
     # Check for POST or GET request
     if request.method == 'POST':
@@ -436,7 +417,10 @@ def get_portfolio_assets(request):
         yf_flag = data.get('yf_flag')
     else:
         portfolio_name = request.GET.get('portfolio')
+
         yf_flag = request.GET.get('yf_flag')
+
+    print("Portfolio Name:::::::::::::::::::::", portfolio_name)
 
     # Get portfolio and cash asset
     portfolio_instance = Portfolio.objects.filter(
@@ -499,7 +483,7 @@ def get_portfolio_assets(request):
 
 
 
-@login_required
+@login_required(login_url="login")
 def remove_stock(request, stock_code, portfolio_id):
     if request.method == "POST":
         # portfolio_id = request.POST.get("portfolio_id")  # Get portfolio_id from POST data
@@ -508,8 +492,6 @@ def remove_stock(request, stock_code, portfolio_id):
         print(f"Portfolio to be deleted from: {portfolio_id}")
 
         # Fetch the cash asset
-        # cash = get_object_or_404(Asset, ticker="CASH")
-        # capital = get_object_or_404(PortfolioAsset, portfolio_id=portfolio_id, asset_id=cash.id)
         portfolio = Portfolio.objects.get(id=portfolio_id)
         print(portfolio)
         capital = portfolio.total_cash_balance
@@ -541,7 +523,7 @@ def remove_stock(request, stock_code, portfolio_id):
                     portfolio=asset.portfolio,  # Match the specific portfolio
                     owner_content_type=portfolio_content_type,  # Match the owner type
                     owner_object_id=portfolio.id  # Match the owner object ID
-)
+                    )
                 print(f"REMOVE ASSET CASH: {cash}")
                 total_amount =   (float(sell_price) * float(portfolio_asset.no_of_shares))
                 print(f"Asset Portfolio: {asset.portfolio}")
@@ -594,9 +576,11 @@ def remove_stock(request, stock_code, portfolio_id):
 # from django.contrib.auth.decorators import login_required
 # from .models import Portfolio
 
-@login_required
+@login_required(login_url="login")
+@user_passes_test(is_manager, login_url='access-denied')
 def portfolios(request):
     # Fetch the user's portfolio
+    
     portfolio_list = Portfolio.objects.filter(owner=request.user.profile)
     print()
     print(portfolio_list)
@@ -607,7 +591,7 @@ def portfolios(request):
 
 
 
-@login_required
+@login_required(login_url="login")
 def get_all_portfolios(request):
     if request.method == "POST":
         data = json.loads(request.body.decode('utf-8'))  # Decode and parse the JSON body
@@ -615,7 +599,7 @@ def get_all_portfolios(request):
 
         # Query for a specific portfolio or all portfolios for the current user
         if portfolio != 'All':
-            portfolios = Portfolio.objects.filter(id=portfolio, owner=request.user.profile)
+            portfolios = Portfolio.objects.filter(id=portfolio)
         else:
             portfolios = Portfolio.objects.filter(owner=request.user.profile)
 
@@ -633,9 +617,13 @@ def get_all_portfolios(request):
         portfolio_total_value = Portfolio.objects.filter(
                 id=OuterRef('portfolio_reference')  # Match the Portfolio ID consistently
             ).annotate(
-                total_value=Sum('portfolio_assets__holding_value') + F('total_cash_balance')
+                # total_value=Sum('portfolio_assets__holding_value') + F('total_cash_balance')
+                # total_value = Coalesce(Sum('portfolio_assets__holding_value'), Value(0)) + F('total_cash_balance')
+                total_value = Coalesce(Sum('portfolio_assets__holding_value'), Value(0), output_field=FloatField()) + Cast(F('total_cash_balance'), FloatField())
+
             ).values('total_value')
 
+        
         # Cash entries
         portfolio_ids = portfolios.values_list('id', flat=True)
         cash_entries = Portfolio.objects.filter(pk__in=portfolio_ids).annotate(
@@ -648,7 +636,7 @@ def get_all_portfolios(request):
         ).values(
             'portfolio_reference', 'ticker', 'industry', 'value', 'trades', 'weight'
         )
-    
+        print(f"CASH ENTRIES:::::: {cash_entries}")
 
         # Portfolio asset details
         all_details = PortfolioAsset.objects.filter(portfolio__in=portfolios).annotate(
@@ -694,7 +682,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 # from .models import Portfolio, Asset, PortfolioAsset
 
-@login_required
+@login_required(login_url="login")
 def add_portfolio(request):
     # Fetch the 'CASH' asset
     # cash = Asset.objects.filter(ticker="CASH").first()
@@ -706,60 +694,64 @@ def add_portfolio(request):
         seed_capital = float(seed_capital)
         units = int(units)
 
-        with transaction.atomic():
-            # Check if the profile has enough balance
-            profile = request.user.profile
-            if profile.balance < seed_capital:
-                messages.error(request, "Insufficient balance in the profile to create a portfolio.")
-                return redirect('portfolios')
+        try:
+            with transaction.atomic():
+                # Check if the profile has enough balance
+                profile = request.user.profile
+                if profile.balance < seed_capital:
+                    messages.error(request, "Insufficient balance in the profile to create a portfolio.")
+                    return redirect('portfolios')
 
-            # Check if the portfolio already exists for the current user
-            if not Portfolio.objects.filter(owner=request.user.id, portfolio_desc=portfolio_desc).exists():
-                # Create the new portfolio
-                new_portfolio, created = Portfolio.objects.update_or_create(
-                owner=request.user.profile,
-                portfolio_desc=portfolio_desc,
-                defaults={
-                    "total_cash_balance": seed_capital,
-                    "units": units}
-            )   
-                if created:
-                    Cash.objects.update_or_create(
-                        portfolio=new_portfolio,
-                        # user=profile,
-                        owner_content_type=ContentType.objects.get_for_model(Profile),
-                        owner_object_id=profile.id,
-                        balance=seed_capital,  # Seed capital as the initial balance
-                        units = units,
-                        currency="USD"
-                    )
-                    # Add seed capital to the portfolio balance
-                    new_portfolio.total_cash_balance = seed_capital
-                    new_asset, created = Asset.objects.update_or_create(
-                    ticker=f"(FOF){new_portfolio.id}",  # Generate a unique ticker for portfolios
+                # Check if the portfolio already exists for the current user
+                if not Portfolio.objects.filter(owner=request.user.id, portfolio_desc=portfolio_desc).exists():
+                    # Create the new portfolio
+                    new_portfolio, created = Portfolio.objects.update_or_create(
+                    owner=request.user.profile,
+                    portfolio_desc=portfolio_desc,
                     defaults={
-                        "company_name": new_portfolio.portfolio_desc,
-                        "is_portfolio": True,
-                        "industry": "Internal Fund",
-                        "portfolio": new_portfolio
-                    }
-                    
-                )
+                        "total_cash_balance": seed_capital,
+                        "units": units}
+                )   
+                    if created:
+                        Cash.objects.update_or_create(
+                            portfolio=new_portfolio,
+                            # user=profile,
+                            owner_content_type=ContentType.objects.get_for_model(Profile),
+                            owner_object_id=profile.id,
+                            balance=seed_capital,  # Seed capital as the initial balance
+                            units = units,
+                            currency="USD"
+                        )
+                        # Add seed capital to the portfolio balance
+                        new_portfolio.total_cash_balance = seed_capital
+                        new_asset, created = Asset.objects.update_or_create(
+                        ticker=f"(FOF){new_portfolio.id}",  # Generate a unique ticker for portfolios
+                        defaults={
+                            "company_name": new_portfolio.portfolio_desc,
+                            "is_portfolio": True,
+                            "industry": "Internal Fund",
+                            "portfolio": new_portfolio
+                        }
+                        
+                    )
 
-                    amount =  profile.balance
-                    print("AMOUNT:", amount)
-                    
-                    new_portfolio.save()
-                    profile.balance -= seed_capital
-                    profile.save()
-                    # Fetch the list of portfolios for the current user
-                    # portfolio_list = Portfolio.objects.filter(owner=request.user.id)
-                    messages.success(request, f"Portfolio '{portfolio_desc}' created successfully.")
+                        amount =  profile.balance
+                        print("AMOUNT:", amount)
+                        
+                        new_portfolio.save()
+                        profile.balance -= seed_capital
+                        profile.save()
+                        # Fetch the list of portfolios for the current user
+                        # portfolio_list = Portfolio.objects.filter(owner=request.user.id)
+                        messages.success(request, f"Portfolio '{portfolio_desc}' created successfully.")
+                    else:
+                        messages.warning(request, f"Portfolio Name '{portfolio_desc}' already exists for user {request.user.username}.")
+                        return redirect('portfolios')  # Assuming 'portfolios' is the URL name for the portfolio list view
                 else:
                     messages.warning(request, f"Portfolio Name '{portfolio_desc}' already exists for user {request.user.username}.")
-                    return redirect('portfolios')  # Assuming 'portfolios' is the URL name for the portfolio list view
-            else:
-                messages.warning(request, f"Portfolio Name '{portfolio_desc}' already exists for user {request.user.username}.")
+
+        except IntegrityError:
+            messages.warning(request, f"Something went wrong!! -  rolled back Change.")    
 
         return redirect('portfolios')
     
@@ -771,7 +763,7 @@ def add_portfolio(request):
 
 
 
-@login_required
+@login_required(login_url="login")
 def sell_partial_db(request):
     try:
         # Parse JSON data from the request body

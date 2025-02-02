@@ -19,7 +19,7 @@
                 </span>
                 <!-- <p class="mb-0 fs-4 text-dark">{{ user.profile.name }}</p> -->
             </div>
-
+            {% comment %}
             <div class="col-12 col-md-12 text-center text-md-start">
                 <span class="mb-0 me-4 text-primary fw-bold fs-5">NAV Unit:</span>
                 <span class=" fs-4 text-success">
@@ -27,7 +27,7 @@
                 </span>
                 <!-- <p class="mb-0 fs-4 text-dark">{{ user.profile.name }}</p> -->
             </div>
-            
+            {% endcomment %}
         </div>
     </div>
 </div>
@@ -80,7 +80,7 @@
                         {% if is_manager %}
                         <button type="button" 
                                 data-url="{% url 'remove_stock' stock_code=stock.asset.ticker portfolio_id=stock.portfolio_asset.portfolio.id  %}" 
-                                class="text-danger remove-stock-btn">
+                                class="bg-danger text-light remove-stock-btn spin-button rounded-pill w-100">
                             Sell
                         </button>
                         {% endif %}
@@ -169,7 +169,7 @@
                 {% if stock.asset.ticker %}
                     <button type="button" 
                             data-url="{% url 'remove_stock' stock_code=stock.asset.ticker portfolio_id=stock.portfolio_asset.portfolio.id  %}" 
-                            class="text-danger remove-stock-btn">
+                            class="text-danger remove-stock-btn spin-button">
                         Sell
                     </button>
                 {% else %}

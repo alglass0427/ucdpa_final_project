@@ -2,6 +2,11 @@
 {% load static %} 
 {% block title %}Dashboard - Portfolio Manager{% endblock %}
 {% block content %}
+
+<div id="loading-spinner" class="spinner-overlay" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
 <h1 class="fs-0 fs-1 fs-sm-2 fs-md-3 fs-lg-4 d-flex d-block justify-content-center align-items-center">
     <span class = "d-none d-sm-block" >Manager Dashboard</span>
     <span class = "d-block d-sm-none" >Dashboard</span>
@@ -79,7 +84,7 @@
             <div class="col-md-2  d-flex justify-content-center align-items-center">    
                 <div id="refreshButton" 
                 data-url= "{% url 'get_portfolio_assets' %}"
-                class="btn btn-primary w-100">
+                class="btn rounded-pill btn-primary w-100">
                     Search
                 </div>
             </div>
@@ -150,18 +155,18 @@
             
             <div class="row g-3 align-items-center">
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="addStockButton" class="btn btn-dark w-100 " data-url="{% url 'add_stock_db' %}">
+                    <button type="button" id="addStockButton" class="btn rounded-pill btn-dark w-100 " data-url="{% url 'add_stock_db' %}">
                         Buy
                     </button>
                 </div>
 
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="sellStockButton" class="btn btn-secondary w-100"  data-url="{% url 'sell_partial_db' %}">
+                    <button type="button" id="sellStockButton" class="btn rounded-pill btn-secondary w-100"  data-url="{% url 'sell_partial_db' %}">
                         Sell
                     </button>
                 </div>
                 <div class="col-lg-4 col-md-4">
-                    <button type="button" id="refreshStockButton" class="btn btn-info w-100">
+                    <button type="button" id="refreshStockButton" class="btn rounded-pill btn-info w-100">
                         Refresh Price
                     </button>
                 </div>
@@ -199,8 +204,11 @@
 {% block scripts %}
 {% comment %} {% endcomment %}
 <script src="{% static 'js/dashboard.js' %}"></script>
+<!-- <script src="{% static 'js/spinner.js' %}"></script> -->
 <!-- <script src="{% static 'js/scripts.js' %}"></script>   -->
 <!-- Search on Dropdown -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+
+
 
 {% endblock scripts %}

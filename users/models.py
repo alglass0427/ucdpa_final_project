@@ -43,7 +43,12 @@ class Profile(models.Model):
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True,editable=False)
     	
     def __str__(self):
-        return str(self.user.username)
+        return f"{str(self.name)} ({str(self.user.username)})"
+    
+    def save(self, *args, **kwargs):
+        if not self.group:  # If no group is set, assign default
+            self.group, _ = Group.objects.get_or_create(name="Investor")
+        super().save(*args, **kwargs)
     
     class Meta:
         ordering = ['username'] # "-" orders by descending

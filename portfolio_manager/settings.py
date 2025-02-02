@@ -12,18 +12,23 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 import os
+import dj_database_url
+import environ
+env = environ.Env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent
 print (BASE_DIR)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))  # Loads the `.env` file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(6u8)oe75sfuckd42(u^drsyvay*uk7=x$kw0rbggd(er1sbki'
-
+# SECRET_KEY = 'django-insecure-(6u8)oe75sfuckd42(u^drsyvay*uk7=x$kw0rbggd(er1sbki'
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'TRUE'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', os.environ.get('RENDER_HOSTNAME', 'ucdpa-final-project.onrender.com',)]
 
@@ -108,6 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+import sys
+# settings.py
+if "test" in sys.argv:
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -143,7 +152,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
+# from django.test import TestCase, override_settings
+# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
+# @override_settings(STATICFILES_STORAGE="django.contrib.staticfiles.storage.StaticFilesStorage")
+# class MyTestCase(TestCase):
+#     def test_example(self):
+#         response = self.client.get("/")
+#         self.assertEqual(response.status_code, 200)
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

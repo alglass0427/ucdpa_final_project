@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %} 
 
 {% block content %}
 
@@ -8,6 +9,9 @@
       
     
       <div class="container">
+
+     
+
         <form class="form" action=" {% url 'profiles' %}" method="get"  >
         <div class="row g-4 ">
           <!-- Heading -->
@@ -127,3 +131,7 @@
      
 </main>
 {% endblock content %}
+
+{% block scripts %}
+<script src= "{% static 'js/scripts.js'  %}" ></script>
+{% endblock scripts %}

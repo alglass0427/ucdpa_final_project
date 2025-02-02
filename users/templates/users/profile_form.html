@@ -11,7 +11,11 @@
 </h1>
 
 <div class="container-sm container_add mt-4" id="login-section">
-    <form method="POST" autocomplete="off" action="{% url 'edit-account' page=None %}" enctype="multipart/form-data">
+    <div class="card-header mb-5 ">
+        <a class="btn rounded-pill btn-primary" href="{% url 'investor' %}">&#10094;</a>
+      </div>
+
+    <form method="POST" autocomplete="off" action="{% url 'edit-account' %}" enctype="multipart/form-data">
         {% csrf_token %}
         
         <div class="row g-3 align-items-center">
@@ -31,7 +35,7 @@
         
         {% endfor %}
         <div class="col-12">
-            <button type="submit" class="btn btn-primary w-100">
+            <button type="submit" class="btn rounded-pill btn-primary w-100">
             {% if page == 'edit' %}
                 Save
             {% else %}

@@ -94,7 +94,7 @@ function applyEventListeners () {
                     const selectedOption = portfolioList.options[portfolioList.selectedIndex];
                     console.log(portfolioList.options)
                     console.log(selectedOption)
-                    
+                    console.log(selectedOption)
                     // Get URL from the data attribute of the button
                     const url = this.dataset.url;
                     let portfolioID  = selectedOption.getAttribute("data-id")
@@ -335,7 +335,7 @@ clearErrorMessages();
                 showError(input, 'Please enter trade note');
                 isValid = false;
             }
-            break;
+                
         default:
             break;
     }

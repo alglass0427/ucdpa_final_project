@@ -119,7 +119,7 @@ from charts.serializers import (
 
 @api_view(['GET'])
 def get_portfolios(request):
-    
+
     owner_id = request.GET.get('owner_id')  # Get the owner ID from the query parameters
     if owner_id:
         portfolios = Portfolio.objects.filter(owner_id=owner_id)  # Filter portfolios by owner
@@ -206,7 +206,7 @@ def combined_dashboard_data(request):
 
     # Calculate total portfolio value
     total_value = PortfolioAsset.objects.aggregate(total=Sum("holding_value"))["total"] 
-    total_value =+  Portfolio.objects.aggregate(total=Sum("total_cash_balance"))["total"] 
+    total_value +=  Portfolio.objects.aggregate(total=Sum("total_cash_balance"))["total"] 
     # Count total users
     total_users = User.objects.count()
     avg_size=total_value/total_users

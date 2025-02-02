@@ -11,14 +11,17 @@ setTimeout(function() {
     }
 }, 3000); // 3000 milliseconds = 3 seconds
 
+
 document.addEventListener('DOMContentLoaded', function() {
     const alert = document.getElementById('alert');
     const closeButton = document.getElementById('alertCloseButton');
-    
+
+    if (alert){
     // Handle close button click
     closeButton.addEventListener('click', function() {
       alert.classList.add('d-none');  // Hide the alert instead of removing it
     });
+  }
   });
 
 

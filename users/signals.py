@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save ,  post_delete
 # using signals with decorators
 from django.dispatch import receiver
-from .models import Profile , User
+from .models import Profile , User ,  Group
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -14,7 +14,8 @@ def createProfile(sender,instance,created, **kwargs):   ### create only exists i
             user=user,
             username = user.username,
             email = user.email,
-            name = user.first_name
+            name = f"{user.first_name} {user.last_name}"  ,
+            
             
         )
 

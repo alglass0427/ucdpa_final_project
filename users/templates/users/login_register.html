@@ -45,18 +45,27 @@
         </div>
 
             
-        <div class="row g-3 align-items-center">
-            <div class="col-lg-12">
-                <button type="submit" class="btn btn-primary w-100">Login</button>
+        <div class="row mt-1 g-3 align-items-center">
+            <div class="col-lg-6">
+                <button type="submit" class="btn rounded-pill btn-primary w-100">Login</button>
+            </div>
+            <div class="col-lg-6">
+                <a class="btn rounded-pill bg-info text-dark w-100" href=" {% url 'register' %}">Sign Up</a>
             </div>
         </div>
+
+        <div class="mt-3 btn rounded-pill">
+            <a href="{% url 'reset_password' %}">Forget Password?</a>
+        </div>
+
+       
     </form>
 </div>
 {% else %}
 
     <form method="POST" autocomplete="off" action="" id = "signUpForm">
         {% csrf_token %}
-                    
+    <div class="row g-3 align-items-center">           
         {% for field in form %}
 
 
@@ -72,10 +81,23 @@
                 {% endif %}
         </div> 
         {% endfor %}
-
-        <div class="col-lg-12 col-sm-12">
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+    
+        
+        <div class="col-md-6">
+            <button type="submit" class="btn rounded-pill btn-primary w-100">Register</button>
         </div>
+
+        <div class="col-md-6">
+            <a class="btn rounded-pill bg-info text-dark w-100" href=" {% url 'login' %}">Log In</a>
+        </div>
+
+    </div>
+       
+        
+
+        
+    
+
     
     </form>
 
