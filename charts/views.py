@@ -15,6 +15,26 @@ from django.db.models import Case, When, BooleanField
 
 from rest_framework.decorators import api_view, renderer_classes
 
+@api_view(['GET'])
+def getRoutes(request):
+
+    routes = [
+        {'GET':'/charts/portfolio/<str:portfolio_id>/'},
+        {'GET':'/charts/portfolio/<str:portfolio_id>/industry/'},
+        {'POST':'/charts/portfolio/<str:portfolio_id>/weighting/'},
+        {'POST':'/charts/total-users/'},
+        {'POST':'/charts/top-invested-stocks/'},
+        {'POST':'/charts/total-portfolio-value/'},
+        {'POST':'/charts/user-growth-over-time/'},
+        {'POST':'/charts/average-portfolio-size/'},
+        {'POST':'/charts/top-industries/'},
+        {'POST':'/charts/combined-dashboard-data/'},
+        {'POST':'/charts/assets/<str:portfolio_id>/'}
+    ]
+
+    return Response(routes) 
+
+
 def portfolio_data(request, portfolio_id):
     """Return data for a specific portfolio, including its assets."""
     portfolio = get_object_or_404(Portfolio, id=portfolio_id)

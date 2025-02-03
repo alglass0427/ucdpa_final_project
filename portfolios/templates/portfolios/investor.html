@@ -33,7 +33,7 @@
         {% csrf_token %}
         <!-- <div class="row g-3 align-items-center"> -->
             <div class="row g-3 d-flex justify-content-between align-items-center"> 
-                <div class="col-lg-4 col-md-12">
+                <div class="col-md-4 col-sm-12">
                     <select title="ownerDropdown" id="ownerDropdown" class="form-control" name="owner">
                         <option>Select Manager</option>
                         
@@ -44,7 +44,7 @@
                     </select>
                 </div>
 
-            <div class="col-lg-4 col-md-12">
+            <div class="col-md-4 col-sm-12">
                 <select title="portfolioDropdown" id="portfolioList" class="form-control" name="portfolio">
                     <option>Select Portfolio
 
@@ -53,25 +53,29 @@
                 </select>
             </div>
 
-            <div class="col-lg-4 col-md-12">
-                <input type="number" class="form-control" name="invest_amount" placeholder="Investment Amount" required>
-            </div>
+            
 
-            <div class="col-lg-6 col-md-12">
-                <input type="test" class="form-control" name="comment" placeholder="Comment" required>
-            </div>
-
-            <div class="col-lg-2 col-md-12">
+            <div class="col-md-4 col-sm-12">
                 <div id="refreshButton" data-url="{% url 'get_all_portfolios' %}" class="btn rounded-pill btn-info w-100">
                     View
                 </div>
             </div>
 
-            <div class="col-lg-2 col-md-12">
-                <button type="submit" class="btn rounded-pill btn-primary w-100" name = "action" value = "Subscription">Sub</button>
+            <div class="col-md-2 col-sm-12">
+                <input type="number" class="form-control" name="invest_amount" placeholder="Investment ($)" required>
             </div>
-            <div class="col-lg-2 col-md-12">
-                <button type="submit" class="btn rounded-pill btn-info w-100" name = "action" value = "Redemption">Red</button>
+
+            <div class="col-md-6 col-sm-12">
+                <input type="test" class="form-control" name="comment" placeholder="Comment" required>
+            </div>
+
+            
+
+            <div class="col-md-2 col-sm-12">
+                <button type="submit" class="btn rounded-pill btn-primary w-100" name = "action" value = "Subscription">Subscribe</button>
+            </div>
+            <div class="col-md-2 col-sm-12">
+                <button type="submit" class="btn rounded-pill btn-warning w-100" name = "action" value = "Redemption">Redeem</button>
             </div>
 
             

@@ -51,9 +51,9 @@ def loginPage(request):
         if user is not None:
             login(request,user)
             if user.profile.group.name == 'Manager':
-                return redirect(request.GET['next'] if 'next' in request.GET else 'dashboard')
+                return redirect(request.GET['next'] if 'next' in request.GET else 'index')
             else:
-                return redirect(request.GET['next'] if 'next' in request.GET else 'investor')
+                return redirect(request.GET['next'] if 'next' in request.GET else 'index')
         else:
             messages.error(request,"Username or Password is Incorrect")
 

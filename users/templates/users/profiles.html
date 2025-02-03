@@ -35,56 +35,12 @@
             </div>
           </div>
             <div class="col-md-2 form-floating">
-              <button class="btn btn-primary w-100" type="submit">Search</button>
+              <button class="btn btn-info w-100" type="submit">Search</button>
             </div>
           
         </div>
       </form>
       
-    
-        
-      
-    
-    <!-- Search Result: DevList -->
-    <!-- <div class="container my-4">
-      <h1 class="text-center mb-4">User Profiles</h1>
-      <div class="table-responsive">
-          <table class="table table-bordered table-striped">
-              <thead class="table-dark">
-                  <tr>
-                      <th>#</th>
-                      <th>Username</th>
-                      <th>Name</th>
-                      <th>Email</th>
-                       <th>Gender</th> 
-                      <th>Location</th>
-                      {% comment %} <th>Group</th> {% endcomment %} 
-                      <th>Balance</th>
-                      <th>Joined</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for profile in profiles %}
-                      <tr>
-                          <td>{{ forloop.counter }}</td>
-                          <td>{{ profile.username }}</td>
-                          <td>{{ profile.name }}</td>
-                          <td>{{ profile.email }}</td>
-                          <td>{{ profile.gender }}</td>
-                          <td>{{ profile.location }}</td>
-                          {% comment %} <td>{{ profile.group.name if profile.group else "N/A" }}</td> {% endcomment %} 
-                          <td>${{ profile.balance|floatformat:2 }}</td>
-                          <td>{{ profile.created|date:"Y" }}</td>
-                      </tr>
-                  {% empty %}
-                      <tr>
-                          <td colspan="9" class="text-center">No profiles found.</td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-        </div>
-  </div> -->
 
 
   <div class="container my-4">
@@ -96,19 +52,28 @@
                     <div class="card-body">
                       <div class="text-center">
                         <p class="mb-1 text-primary fw-bold fs-5">{{ profile.name }}</p>
+                        <p class="mb-1 text-danger fw-bold fs-5">{{ profile.group.name }}</p>
+                        
                       </div>
                         
                         <h6 class="card-subtitle mb-2 text-muted">{{ profile.username }}</h6>
                         <small class="text-muted">Created: {{ profile.created|date:"M-Y" }}</small>
+                        <hr>
                         <p class="card-text">
                             
                             <strong><i class="bi bi-envelope"></i> - </strong> {{ profile.email }}<br>
                             <strong><i class="bi bi-gender-ambiguous"></i> - </strong> {{ profile.gender }}<br>
                             <strong><i class="bi bi-geo-alt"></i> - </strong> {{ profile.location|default:"N/A" }}<br>
                             <strong><i class="bi bi-people"></i> - </strong> {{ profile.group.name }}<br>
-                            <!-- <strong><i class="bi bi-cash"></i> - </strong> ${{ profile.balance|floatformat:2 }} -->
                             
+                            <!-- <strong><i class="bi bi-cash"></i> - </strong> ${{ profile.balance|floatformat:2 }} -->
                         </p>
+                        <hr>
+                        {% if profile.short_intro %}
+                        <p>
+                          </strong> {{ profile.short_intro }}<br>
+                        </p>
+                        {% endif %}
                         {% if request.user.profile.id != profile.id %}
                               <a href="{% url 'create-message' profile.id %}" class="btn btn-primary">Send Message </a>
                         {% else %}
