@@ -27,6 +27,12 @@
   }
 
 
+  .sidebar {
+    background-color: #f8f9fa; /* Light grey */
+    height: 100vh; /* Full height */
+    overflow-y: auto; /* Scroll if content overflows */
+    padding: 20px;
+}
 
 body {
     font-family: Arial, sans-serif;

@@ -8,3 +8,17 @@ border-color: #0c5460;}
 .bg-primary{
     background-color: #155724;
 }
+
+.sidebar {
+  background-color: #343a40;
+  color: white;
+}
+.sidebar a {
+  color: white;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+}
+.sidebar a:hover {
+  background-color: #495057;
+}

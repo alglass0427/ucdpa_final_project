@@ -2,7 +2,7 @@ from django.db.models.signals import post_save ,  post_delete
 # using signals with decorators
 from django.dispatch import receiver
 from .models import Profile , User ,  Group
-from django.core.mail import send_mail
+from django.core.mail import send_mail , EmailMultiAlternatives
 from django.conf import settings
 
 @receiver(post_save,sender = User)
@@ -14,10 +14,31 @@ def createProfile(sender,instance,created, **kwargs):   ### create only exists i
             user=user,
             username = user.username,
             email = user.email,
-            name = f"{user.first_name} {user.last_name}"  ,
-            
-            
+            name = f"{user.first_name} {user.last_name}"  , 
         )
+
+        subject = 'Welcome to the Website'
+        message = "Create a portfolio -  Hope you enjoy"
+
+        
+        subject = f"{profile.name} , Welcome to Portfolio Manager!"
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [profile.email]
+        text_content = "Create a portfolio -  Hope you enjoy."
+        html_content = """
+            <html>
+                <body>
+                    <h2 style="color: #4CAF50;">Welcome to Our Service!</h2>
+                    <p>Create a portfolio -  Hope you enjoy. 💰💰💰💰</p>
+                </body>
+            </html>
+        """
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+
 
 @receiver(post_save, sender = Profile)
 def updateUser(sender, instance, created , **kwargs):

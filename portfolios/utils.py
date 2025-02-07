@@ -394,14 +394,6 @@ def handle_cash_update_or_create_investor(portfolio, buy_price, new_units,owner,
             cash.units += new_units
             cash.save()
 
-            # Increment balance and units for the existing instance
-            # if buy_or_sell == 'Subscription':
-            #     cash.balance += float(buy_price) ##* float(no_of_shares)
-            #     cash.units += new_units
-            # else:
-            #     cash.balance -= float(buy_price) ##* float(no_of_shares)
-            #     cash.units += new_units
-            # cash.save()
 
             # Calculate the difference in balance and units
             balance_diff = cash.balance - previous_balance

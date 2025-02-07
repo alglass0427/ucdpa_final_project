@@ -21,15 +21,15 @@ def getRoutes(request):
     routes = [
         {'GET':'/charts/portfolio/<str:portfolio_id>/'},
         {'GET':'/charts/portfolio/<str:portfolio_id>/industry/'},
-        {'POST':'/charts/portfolio/<str:portfolio_id>/weighting/'},
-        {'POST':'/charts/total-users/'},
-        {'POST':'/charts/top-invested-stocks/'},
-        {'POST':'/charts/total-portfolio-value/'},
-        {'POST':'/charts/user-growth-over-time/'},
-        {'POST':'/charts/average-portfolio-size/'},
-        {'POST':'/charts/top-industries/'},
-        {'POST':'/charts/combined-dashboard-data/'},
-        {'POST':'/charts/assets/<str:portfolio_id>/'}
+        {'GET':'/charts/portfolio/<str:portfolio_id>/weighting/'},
+        {'GET':'/charts/total-users/'},
+        {'GET':'/charts/top-invested-stocks/'},
+        {'GET':'/charts/total-portfolio-value/'},
+        {'GET':'/charts/user-growth-over-time/'},
+        {'GET':'/charts/average-portfolio-size/'},
+        {'GET':'/charts/top-industries/'},
+        {'GET':'/charts/combined-dashboard-data/'},
+        {'GET':'/charts/assets/<str:portfolio_id>/'}
     ]
 
     return Response(routes) 
