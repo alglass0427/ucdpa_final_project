@@ -16,6 +16,8 @@ Responsive UI: A Bootstrap-based responsive interface that adapts to different s
 Charts: Chart.js to display Portfolio stats / information
 API:  API to retrieve data For Charts
 REST API :  API using Serializers in restframework
+PAGINATION : Django Pagination -  USERS UI display 3 at a time
+SEARCH : SEARCH USERS  -  USING Q Query
 
 ## Prerequisites
 Before running this application, ensure you have the following installed:
@@ -263,6 +265,20 @@ Allows Managers to view existing portfolio data and allocations in charts and ta
     Displays selected Portfolio Data - 
     Investor Access Alternative to Portfolio (Manager Access) UI
     Can Invest in Existing Portfolios
+
+## USERS / HOME / INBOX
+### Users
+    Displays Existing Users
+    Can Send Messages to Existing Users
+    Inbox to View and delete Messages
+    SEARCH FUNCTIONALITY  
+
+![search](image-4.png)
+
+### Home Screen
+    Displays Sample App stats retrieved from In Project API
+
+![homescreen](image-3.png)  
 
 ## API
 
