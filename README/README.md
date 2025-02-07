@@ -1,4 +1,4 @@
-# ucdpa_sql_project
+# ucdpa_final_project
 
 ## On Render
     Link to deployment
