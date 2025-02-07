@@ -2,11 +2,11 @@
 
 ## On Render
     Link to deployment
-    https://ucdpa-sql-project.onrender.com/
+    https://ucdpa-final-project.onrender.com/portfolios/investor/
 
-## Portfolio Dashboard Flask Application with PostgreSQL
+## Portfolio Manager Django Application with PostgreSQL
 Overview
-This is a Flask-based web application that allows users to manage a portfolio of stocks. The application enables users to add, remove, and view stocks in their portfolio. Additionally, the application fetches real-time stock prices and other data points (e.g., ISIN) using Yahoo Finance.
+This is a DJANGO web application that allows users to manage a portfolio of stocks. The application enables users to add, remove, and view stocks in their portfolio. Additionally, the application fetches real-time stock prices and other data points (e.g., ISIN) using Yahoo Finance.
 
 ## Features
 User Authentication: Secure login and session management.
@@ -17,7 +17,7 @@ Charts: Chart.js to display Portfolio stats / information
 API:  API to retrieve data For Charts
 REST API :  API using Serializers in restframework
 PAGINATION : Django Pagination -  USERS UI display 3 at a time
-SEARCH : SEARCH USERS  -  USING Q Query
+SEARCH : SEARCH USERS
 
 ## Prerequisites
 Before running this application, ensure you have the following installed:
