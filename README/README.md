@@ -18,6 +18,7 @@ API:  API to retrieve data For Charts
 REST API :  API using Serializers in restframework
 PAGINATION : Django Pagination -  USERS UI display 3 at a time
 SEARCH : SEARCH USERS
+TEST: UNIT testing using test.py in apps
 
 ## Prerequisites
 Before running this application, ensure you have the following installed:
@@ -267,6 +268,11 @@ Allows Managers to view existing portfolio data and allocations in charts and ta
     Can Invest in Existing Portfolios
 
 ## USERS / HOME / INBOX
+
+## test.py
+
+![test](image-5.png)
+
 ### Users
     Displays Existing Users
     Can Send Messages to Existing Users
