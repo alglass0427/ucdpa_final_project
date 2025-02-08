@@ -16,7 +16,6 @@ def searchProfiles(request):
         profiles = Profile.objects.all()  # Or return [] if you want to show no results
         return profiles, search_query
 
-    # skills = Skill.objects.filter(name__icontains = search_query)
     
     profiles = Profile.objects.distinct().filter(
         Q(name__icontains = search_query)| ##__icontains is is not case sensitive -->> BEFORE THE __icontains the filed vlaue from the table is entered  -  in this case "name"

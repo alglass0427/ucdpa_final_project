@@ -273,10 +273,7 @@ def add_stock_db(request):
                 #subtract from user balance
                 profile.balance -= total_amount
                 profile.save()
-                # print(current_balance,portfolio.units)
-                # new_units = ((current_balance + total_amount)/(current_balance/portfolio.units))-portfolio.units
-                # portfolio.units	 = 
-                # print("UNITS:::::",new_units)
+                
                 
                 
             return JsonResponse({
@@ -570,11 +567,6 @@ def remove_stock(request, stock_code, portfolio_id):
     return JsonResponse({"message": "Invalid request method.", "category": "danger"}, status=405)
 
 
-
-
-# from django.shortcuts import render
-# from django.contrib.auth.decorators import login_required
-# from .models import Portfolio
 
 @login_required(login_url="login")
 @user_passes_test(is_manager, login_url='access-denied')
